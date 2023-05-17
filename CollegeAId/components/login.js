@@ -7,13 +7,37 @@ import {BrowserRouter,
 } from "react-router-dom";
 import { Button, Checkbox, Form, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { useRef, useState, useEffect, useContext } from 'react';
+import useToken from '../contexts/useToken';
+import AuthContext from '../contexts/AuthProvider';
+import axios from '../api/axios';
+const LOGIN_URL = '/auth/login';
 
 
 const LogIn = () => {
+    //const { setAuth } = useContext(AuthContext);
     const navigate = useNavigate();
-    const onFinish = (values) => {
-        console.log('Success:', values);
+  
+    const {token, setToken} = useToken();
+
+    const onFinish = async (values) => {
+      console.log( JSON.stringify({email: values.username ,password: values.password }));
+      try {
+        const response = await axios.post(LOGIN_URL,
+            JSON.stringify({email: values.username ,password: values.password }),
+        );
+        console.log(JSON.stringify(response));
+        const accessToken = response?.data?.token;
+        setToken(accessToken);
         navigate('/home')
+    } catch (err) {
+      console.log(err);
+        if (!err?.response) {
+            setErrMsg('No Server Response');
+        }  else {
+            setErrMsg('Login Failed');
+        }
+          }
       };
 
       const onRegister = () => {
