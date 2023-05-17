@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.1.0",
     "@expo/webpack-config": "^18.0.1",
     "antd": "^5.5.0",
     "axios": "^1.4.0",

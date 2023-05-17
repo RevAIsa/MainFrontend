@@ -8,7 +8,7 @@ import { Button, Checkbox, Form, Input } from 'antd';
 import LogIn from './components/login';
 import Register from './components/register';
 import Home from './components/home';
-
+import Essays from './components/Essays';
 
 export default function App() {
   return (
@@ -18,6 +18,7 @@ export default function App() {
       <Route path ={"/"} element={<LogIn/>}/>
       <Route path ={"/register"} element={<Register/>}/>
       <Route path ={"/home"} element={<Home/>}/>
+      <Route path ={"/essays"} element={<Essays/>}/>
 
       </Routes>
       

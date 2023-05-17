@@ -12,19 +12,41 @@ import useToken from '../contexts/useToken';
 import AuthContext from '../contexts/AuthProvider';
 import axios from '../api/axios';
 const REGISTER_URL = '/auth/register';
-
+const LOGIN_URL = '/auth/login';
 
 
 const Register = () => {
     const navigate = useNavigate();
-    
+    const {token, setToken} = useToken();
     const onFinish = async (values) => {
-      console.log( JSON.stringify({email: values.username ,password: values.password }));
+      console.log( JSON.stringify({
+        firstName: values.name,
+        lastName: values.last,
+        password: values.password,
+        email: values.email,
+        graduationYear: values.grad
+        }));
       try {
-        const response = await axios.post(REGISTER_URL,
-            JSON.stringify({email: values.username ,password: values.password }),
+        const response_register = await axios.post(REGISTER_URL,
+          {
+            firstName: values.name,
+            lastName: values.last,
+            password: values.password,
+            email: values.email,
+            graduationYear: values.grad
+            },
+        );
+        console.log(JSON.stringify(response_register));
+
+
+        const response = await axios.post(LOGIN_URL,
+          {
+            email: values.email,
+            password: values.password,
+            },
         );
         console.log(JSON.stringify(response));
+
         const accessToken = response?.data?.token;
         setToken(accessToken);
         navigate('/home')
@@ -49,13 +71,13 @@ const Register = () => {
 return <Form
     name="basic"
     labelCol={{
-      span: 8,
+      span: 10,
     }}
     wrapperCol={{
-      span: 16,
+      span: 20,
     }}
     style={{
-      maxWidth: 600,
+      maxWidth: 700,
     }}
     initialValues={{
       remember: true,
@@ -64,13 +86,53 @@ return <Form
     onFinishFailed={onFinishFailed}
     autoComplete="off"
   >
-    <Form.Item
-      label="Username"
-      name="username"
+ <Form.Item
+      label="First Name"
+      name="name"
       rules={[
         {
           required: true,
-          message: 'Please input your username!',
+          message: 'Please input your first name!',
+        },
+      ]}
+    >
+      <Input />
+    </Form.Item>
+
+    <Form.Item
+      label="Last Name"
+      name="last"
+      rules={[
+        {
+          required: true,
+          message: 'Please input your last name!',
+        },
+      ]}
+    >
+      <Input />
+    </Form.Item>
+
+    <Form.Item
+      label="Graduation Year"
+      name="grad"
+      rules={[
+        {
+          required: true,
+          message: 'Please input your last name!',
+        },
+      ]}
+    >
+      <Input />
+    </Form.Item>
+
+
+    <Form.Item
+      label="Email"
+      name="email"
+      rules={[
+        {
+          required: true,
+          message: 'Please input your email!',
         },
       ]}
     >

@@ -24,10 +24,10 @@ const LogIn = () => {
       console.log( JSON.stringify({email: values.username ,password: values.password }));
       try {
         const response = await axios.post(LOGIN_URL,
-            JSON.stringify({email: values.username ,password: values.password }),
+          {email: values.username ,password: values.password },
         );
         console.log(JSON.stringify(response));
-        const accessToken = response?.data?.token;
+        const accessToken = response?.data;
         setToken(accessToken);
         navigate('/home')
     } catch (err) {

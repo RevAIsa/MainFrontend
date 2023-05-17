@@ -7,13 +7,19 @@ import {BrowserRouter,
 } from "react-router-dom";
 import { Button, Checkbox, Form, Input,  } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { Breadcrumb, Layout, Menu, theme, Col, Tabs} from 'antd';
+import { Breadcrumb, Layout, Menu, theme, Col, Row, Tabs} from 'antd';
+import useToken from '../contexts/useToken';
+import {LogoutOutlined} from '@ant-design/icons';
+import { EssayReviewer } from './essayReviewer';
+import { NavBar } from './NavBar';
 const { Header, Content, Footer } = Layout;
 const { TextArea } = Input;
+
+
+
 const Home = () => {
-    const {
-        token: { colorBgContainer },
-      } = theme.useToken();
+    const {token, setToken} = useToken();
+    console.log(token)
 
     const navigate = useNavigate();
     const onFinish = (values) => {
@@ -27,68 +33,24 @@ const Home = () => {
         console.log('Failed:', errorInfo);
       };
 
-return    <Layout  style={{width: '100%',
-    display: 'flex',}}>
-      <Header
-        style={{
-          display: 'flex',
-          alignItems: 'center',
+return <Layout  style={{width: '100%',}}>
+    <NavBar onBack = {onBack}/>
 
-        }}
-      >
-
-        <Menu  
-          theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={['2']}
-          items={new Array(3).fill(null).map((_, index) => {
-            const key = index + 1;
-            return {
-              key,
-              label: `nav ${key}`,
-            };
-          })}
-        />
-      </Header>
       <Content
+
         style={{
           padding: '0 50px',
         }}
       >
-        <Breadcrumb
-          style={{
-            margin: '16px 0',
-          }}
-        >
-          <Breadcrumb.Item>Home</Breadcrumb.Item>
-          <Breadcrumb.Item>List</Breadcrumb.Item>
-          <Breadcrumb.Item>App</Breadcrumb.Item>
-        </Breadcrumb>
+
         <div
           className="site-layout-content"
           style={{
-            background: colorBgContainer,
+         
           }}
         >
-         <Button onClick={onBack} htmlType="register">
-        Register
-      </Button>
-      <Col span={12}>col-12-1
-      <TextArea rows={4} />
-      </Col>
-      <Col span={12}>col-12-2  <Tabs
-        defaultActiveKey="1"
-        type="card"
-        size={size}
-        items={new Array(3).fill(null).map((_, i) => {
-          const id = String(i + 1);
-          return {
-            label: `Card Tab ${id}`,
-            key: id,
-            children: `Content of card tab ${id}`,
-          };
-        })}
-      /></Col>
+         <EssayReviewer/>
+
         </div>
       </Content>
       <Footer
@@ -99,7 +61,6 @@ return    <Layout  style={{width: '100%',
         Ant Design ©2023 Created by Ant UED
       </Footer>
     </Layout>
- 
 }
 
 export default Home;
