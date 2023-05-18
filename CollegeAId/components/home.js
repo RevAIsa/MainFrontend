@@ -6,7 +6,7 @@ import {BrowserRouter,
   Route,
 } from "react-router-dom";
 import { Button, Checkbox, Form, Input,  } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Breadcrumb, Layout, Menu, theme, Col, Row, Tabs} from 'antd';
 import useToken from '../contexts/useToken';
 import {LogoutOutlined} from '@ant-design/icons';
@@ -18,6 +18,9 @@ const { TextArea } = Input;
 
 
 const Home = () => {
+    const {state} = useLocation();
+    const { title } = state;
+    console.log(title);
     const {token, setToken} = useToken();
     console.log(token)
 
@@ -27,14 +30,21 @@ const Home = () => {
       };
 
       const onBack = () => {
+        navigate('/essays')
+      };
+
+
+      const onLogOut = () => {
         navigate('/')
       };
+
+
       const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
       };
 
 return <Layout  style={{width: '100%',}}>
-    <NavBar onBack = {onBack}/>
+    <NavBar onBack = {onBack} onLogOut = {onLogOut}/>
 
       <Content
 
@@ -49,6 +59,9 @@ return <Layout  style={{width: '100%',}}>
          
           }}
         >
+          <Text>{title}</Text>
+
+    
          <EssayReviewer/>
 
         </div>

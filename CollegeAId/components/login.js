@@ -109,7 +109,7 @@ return <Form
       }}
     >
       <Button type="primary" htmlType="submit">
-        Submit
+        Login
       </Button>
       <Button onClick={onRegister} htmlType="register">
         Register

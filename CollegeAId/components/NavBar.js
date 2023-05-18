@@ -9,12 +9,13 @@ import { Button, Checkbox, Form, Input,  } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { Breadcrumb, Layout, Menu, theme, Col, Row, Tabs} from 'antd';
 import useToken from '../contexts/useToken';
-import {LogoutOutlined} from '@ant-design/icons';
+import {LogoutOutlined,RollbackOutlined} from '@ant-design/icons';
 const { Header, Content, Footer } = Layout;
 const { TextArea } = Input;
 
 export function  NavBar(props){
-    return       <Header
+
+    return <Header
     theme="dark"
      style={{
        display: 'flex',
@@ -25,27 +26,26 @@ export function  NavBar(props){
      }}
     >
     
-     <Menu  
-       theme="dark"
-       mode="horizontal"
-       defaultSelectedKeys={['2']}
-       items={new Array(3).fill(null).map((_, index) => {
-         const key = index + 1;
-         return {
-           key,
-           label: `nav ${key}`,
-           
-         };
-       }
-       
-       )
-     
-     }
-     />
+     <Text style={styles.baseText}> CollegeAId </Text>
+     <div>
+
+    {props.onBack && <Button  onClick={props.onBack} htmlType="back">
     
-     <Button  onClick={props.onBack} htmlType="logout">
+     <Text>My Essays  </Text>
+     <RollbackOutlined />
+    </Button>    }
+     <Button  onClick={props.onLogOut} htmlType="logout">
+    <Text>Log Out   </Text>
      <LogoutOutlined />
     </Button>
+    </div>
     </Header>;
-  }
-  
+  };
+
+
+  const styles = StyleSheet.create({
+    baseText: {
+      fontWeight: 'bold',
+      color: 'white',
+    },
+  });
