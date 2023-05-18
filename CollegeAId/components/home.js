@@ -18,9 +18,9 @@ const { TextArea } = Input;
 
 
 const Home = () => {
-    const {state} = useLocation();
-    const { title } = state;
-    console.log(title);
+   // const {state} = useLocation();
+   // const { title } = state;
+   // console.log(title);
     const {token, setToken} = useToken();
     console.log(token)
 
@@ -59,7 +59,7 @@ return <Layout  style={{width: '100%',}}>
          
           }}
         >
-          <Text>{title}</Text>
+          
 
     
          <EssayReviewer/>

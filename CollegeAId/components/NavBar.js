@@ -29,11 +29,13 @@ export function  NavBar(props){
      <Text style={styles.baseText}> CollegeAId </Text>
      <div>
 
-    {props.onBack && <Button  onClick={props.onBack} htmlType="back">
-    
+    {  props.onBack && <Button  onClick={props.onBack} htmlType="back">
      <Text>My Essays  </Text>
      <RollbackOutlined />
-    </Button>    }
+    </Button>   
+     }
+
+
      <Button  onClick={props.onLogOut} htmlType="logout">
     <Text>Log Out   </Text>
      <LogoutOutlined />
@@ -48,4 +50,12 @@ export function  NavBar(props){
       fontWeight: 'bold',
       color: 'white',
     },
+
+
+    othertest: {
+
+
+
+      
+    }
   });

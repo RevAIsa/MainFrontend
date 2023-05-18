@@ -13,7 +13,7 @@ import useToken from '../contexts/useToken';
 import {LogoutOutlined} from '@ant-design/icons';
 import { EssayReviewer } from './essayReviewer';
 import { NavBar } from './NavBar';
-import '../App.css';
+import '../Essays.css';
 import { Table, Modal } from "antd";
 import { useState } from "react";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";

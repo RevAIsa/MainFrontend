@@ -19,7 +19,6 @@ const LogIn = () => {
     const navigate = useNavigate();
   
     const {token, setToken} = useToken();
-
     const onFinish = async (values) => {
       console.log( JSON.stringify({email: values.username ,password: values.password }));
       try {
@@ -29,7 +28,7 @@ const LogIn = () => {
         console.log(JSON.stringify(response));
         const accessToken = response?.data;
         setToken(accessToken);
-        navigate('/home')
+        navigate('/essays')
     } catch (err) {
       console.log(err);
         if (!err?.response) {
