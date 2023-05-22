@@ -88,15 +88,15 @@ export function EssayReviewer() {
             essay: essay
           },
         );
-        console.log(JSON.stringify(response_get_prompt));
-        const text = (JSON.stringify(response_get_prompt.data));
+        const text = response_get_prompt.data.response
         console.log(text);
         //  const lines = text.split('\n');
+        // console.log(line)
         // const elements = lines.map((line, index) => (
-        //   <p key={index}>{line}</p>
+        //   <Text key={index}>{line}</Text>
         // ));
 
-        const newpromptArray = promptArray.map((c, i) => {
+        var newpromptArray = promptArray.map((c, i) => {
           if (i === key) {
             // Increment the clicked counter
             return text;
