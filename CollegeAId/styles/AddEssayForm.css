@@ -29,7 +29,11 @@
   }
 
   .taller-prompt {
-    height: 150px; /* Adjust the height as desired */
+    height: 100px; /* Adjust the height as desired */
+  }
+
+  .taller-essay {
+    height: 200px; /* Adjust the height as desired */
   }
   
   .submit-button {
