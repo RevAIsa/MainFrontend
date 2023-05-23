@@ -51,29 +51,29 @@ const EssayDashboard = () => {
   const handleSaveNewEssay = async () => {
     try {
 
-        const essayData = {
-            userId: "6466784bb64c104c502d677c",
-            customFileName: document.getElementById('essay-title').value,
-            prompt: document.getElementById('essay-prompt').value,
-            essay: document.getElementById('essay-file').files[0],
-          };
-        
-          console.log(essayData);
-          setFormValues(formValues);
-          console.log('No this is:', essayData);
-      
-          // make a call to the api ./essay/upload
-          const response = await axios.post(UPLOAD_URL, essayData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          });    
-      
-          console.log(response)
-          handleCancel();
+      const essayData = {
+        userId: "6466784bb64c104c502d677c",
+        customFileName: document.getElementById('essay-title').value,
+        prompt: document.getElementById('essay-prompt').value,
+        essay: document.getElementById('essay-file').files[0],
+      };
+
+      console.log(essayData);
+      setFormValues(formValues);
+      console.log('No this is:', essayData);
+
+      // make a call to the api ./essay/upload
+      const response = await axios.post(UPLOAD_URL, essayData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      console.log(response)
+      handleCancel();
 
     } catch (error) {
-        console.log(`There was an error: ${error}`)
+      console.log(`There was an error: ${error}`)
     }
   };
 
@@ -121,26 +121,26 @@ const EssayDashboard = () => {
             </button>
           </div>
 
-                    <Modal
-                title="Upload New Essay"
-                open={isModalVisible}
-                onCancel={handleCancel}
-                footer={[
-                <Button key="cancel" onClick={handleCancel}>
-                    Cancel
-                </Button>,
-                <Button
-                    key="confirm"
-                    type="primary"
-                    style={{ backgroundColor: '#0d490d', borderColor: '#0d490d' }}
-                    onClick={handleSaveNewEssay}
-                >
-                    Confirm
-                </Button>,
-                ]}
-            >
-                {isAddingEssay && <AddEssayForm onCloseForm={handleCloseForm} />}
-            </Modal>
+          <Modal
+            title="Upload New Essay"
+            open={isModalVisible}
+            onCancel={handleCancel}
+            footer={[
+              <Button key="cancel" onClick={handleCancel}>
+                Cancel
+              </Button>,
+              <Button
+                key="confirm"
+                type="primary"
+                style={{ backgroundColor: '#0d490d', borderColor: '#0d490d' }}
+                onClick={handleSaveNewEssay}
+              >
+                Confirm
+              </Button>,
+            ]}
+          >
+            {isAddingEssay && <AddEssayForm onCloseForm={handleCloseForm} />}
+          </Modal>
 
           {/* Render remaining essay cards */}
           {[...Array(9)].map((_, index) => (
