@@ -13,6 +13,7 @@ import '../styles/AddEssayForm.css';
 // api paths
 const UPLOAD_ESSAY_STRING_URL = '/essay/uploadEssayString';
 const GET_ALL_ESSAYS_URL = '/essay/getAll/6466784bb64c104c502d677c'
+const DELETE_ESSAY_URL = '/essay/'
 
 const EssayDashboard = () => {
   // state hooks for the essay dashboard
@@ -20,6 +21,9 @@ const EssayDashboard = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [formValues, setFormValues] = useState(null);
   const [essays, setEssays] = useState([]);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [deleteEssayId, setDeleteEssayId] = useState('');
+
 
   const navigate = useNavigate();
 
@@ -27,15 +31,51 @@ const EssayDashboard = () => {
     navigate('/');
   };
 
+  // navigate to the essay reviewer
+  // pass the essayId as a state variable to be used on that screen
   const handleEditClick = (essayId) => {
-    // Logic for editing the essay
     console.log(essayId);
     navigate('/essayReview', { state: {essayId} });
   };
 
-  const handleDelete = () => {
-    // Logic for deleting the essay
+  // delete the essay and then reload the essay list
+  const handleDeleteClick = async (essayId) => {
+    console.log("Entered handle delete clicked")
+
+    try {
+        const response = await axios.delete(DELETE_ESSAY_URL, {
+          data: {
+            essayId: essayId,
+            userId: "6466784bb64c104c502d677c",
+          },
+        });
+
+        getAllEssays();
+
+    } catch (error) {
+        console.log(error)
+    }
+  }
+ 
+  // functions for showing the delete modal confirmation message
+  const showDeleteModal = (essayId) => {
+    setDeleteEssayId(essayId);
+    setIsDeleteModalVisible(true);
   };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      await handleDeleteClick(deleteEssayId);
+      setIsDeleteModalVisible(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setIsDeleteModalVisible(false);
+  };
+
 
   const handleAddEssay = () => {
     // Logic for adding a new essay
@@ -187,10 +227,22 @@ const EssayDashboard = () => {
                 title={essay.customFileName}
                 lastUpdated={essay.updatedAt}
                 onEditClick={() => handleEditClick(essay._id)}
-                onDelete={handleDelete}
+                onDeleteClick={() => showDeleteModal(essay._id)}
             />
             </div>
         ))}
+
+            {/* Delete confirmation modal */}
+            <Modal
+                title="Confirm Delete"
+                open={isDeleteModalVisible}
+                onOk={handleDeleteConfirm}
+                onCancel={handleDeleteCancel}
+                okButtonProps={{ style: { backgroundColor: 'red', borderColor: 'red' } }}
+                style={{ top: '35%' }}
+            >
+                <p>Are you sure you want to delete this essay?</p>
+            </Modal>
           
         </div>
       </div>
