@@ -11,7 +11,7 @@ import axios from '../api/axios';
 import '../styles/AddEssayForm.css';
 
 // api paths
-const UPLOAD_ESSAY_URL = '/essay/upload';
+const UPLOAD_ESSAY_STRING_URL = '/essay/uploadEssayString';
 const GET_ALL_ESSAYS_URL = '/essay/getAll/6466784bb64c104c502d677c'
 
 const EssayDashboard = () => {
@@ -29,7 +29,8 @@ const EssayDashboard = () => {
 
   const handleEditClick = (essayId) => {
     // Logic for editing the essay
-    console.log(essayId)
+    console.log(essayId);
+    navigate('/essayReview', { state: {essayId} });
   };
 
   const handleDelete = () => {
@@ -93,19 +94,14 @@ const EssayDashboard = () => {
             userId: "6466784bb64c104c502d677c",
             customFileName: document.getElementById('essay-title').value,
             prompt: document.getElementById('essay-prompt').value,
-            essay: document.getElementById('essay-file').files[0],
+            essayString: document.getElementById('essay-string').value,
           };
         
           console.log(essayData);
           setFormValues(formValues);
-          console.log('No this is:', essayData);
       
           // make a call to the api ./essay/upload
-          const response = await axios.post(UPLOAD_ESSAY_URL, essayData, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          });    
+          const response = await axios.post(UPLOAD_ESSAY_STRING_URL, essayData);   
 
           getAllEssays();
       

@@ -1,25 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, } from 'react-native';
-import { Button, Input, } from 'antd';
-import { Layout, Col, Row, Tabs } from 'antd';
+import { Input, } from 'antd';
+import {  Col, Row, Tabs } from 'antd';
 const { TextArea } = Input;
-import { useState } from "react";
-const UPLOAD_URL = '/essay/upload';
-const GET_FILE_URL = '/essay/:id';
-const GET_PROMPT_URL = '/suggestion/';
-import { NavBar } from './NavBar';
 import axios from '../api/axios';
 
-export function EssayReviewer() {
+// api paths
+const UPLOAD_ESSAY_URL = '/essay/upload';
+const GET_ESSAY_BY_ID_URL = '/essay/getOneString/:essayId';
+const GET_PROMPT_URL = '/suggestion/';
 
-  // stores local version of essay
-  const [essay, updateEssay] = useState(null);
+const EssayReviewer = ({ essayId }) => {
 
+  // state variables for a local version of the essay, the prompt array
+  const [essay, updateEssay] = useState("");
+  const [essayPrompt, updateEssayPrompt] = useState("");
   const [promptArray, updatePrompt] = useState(["Nothing to see yet!"].concat(["Loading..."]).concat(["Loading..."]).concat(["Loading..."]).concat(["Loading..."]).concat(["Loading..."]).concat(["Loading..."]));
-  console.log(promptArray)
+
+  // use effect that is called each time the value of essayId changes
+  useEffect(() => {
+
+    fetchEssay()
+
+  }, [essayId]);
 
   // initialize tabs
-  const items = ["hook", "themes", "Grammar", "voice", "language", "structure", "relevance"].map((tabName, i) => {
+  const items = ["Hook", "Themes", "Grammar", "Voice", "Language", "Structure", "Relevance"].map((tabName, i) => {
     const id = String(i + 1);
     return {
       label: tabName,
@@ -28,6 +34,27 @@ export function EssayReviewer() {
 
     };
   });
+
+  const XMLToString = (xmlData) => {
+    const serializer = new XMLSerializer();
+    return serializer.serializeToString(xmlData);
+  };
+
+  // fetches the essay from the api based on the essayId
+  const fetchEssay = async() => {
+    try {
+
+      const getSpecificEssayURL = GET_ESSAY_BY_ID_URL.replace(':essayId', essayId);
+      const response = await axios.get(getSpecificEssayURL);
+
+      console.log(response.data);
+      updateEssay(response.data.essayString);
+      updateEssayPrompt(response.data.essayPrompt);
+
+    } catch (error) {
+      console.log(error)
+    }
+  };  
 
   // updates db when save button is clicked
   const onSave = async (values) => {
@@ -127,9 +154,15 @@ export function EssayReviewer() {
     onPrompt(items[key - 1].label, key - 1)
   };
 
+  // returns the UI elements of the essay reviewer component along with their props
+  // initially loads the essay into the text field based on the EssayReviewer's essayId prop
   return <Row justify="space-evenly" gutter={[24, 16]}>
     <Col span={12}>
-      <TextArea showCount onChange={onChange} style={{ height: 700, resize: 'none' }} />
+      <TextArea 
+        showCount 
+        onChange={onChange} 
+        style={{ height: 700, resize: 'none' }}
+        value={essay} />
     </Col>
 
     <Col span={12}>
@@ -139,3 +172,5 @@ export function EssayReviewer() {
       /></Col>
   </Row>;
 }
+
+export default EssayReviewer;

@@ -7,7 +7,7 @@ import {BrowserRouter,
 import { Button, Checkbox, Form, Input } from 'antd';
 import LogIn from './components/login';
 import Register from './components/register';
-import Home from './components/home';
+import EssayReviewShell from './components/EssayReviewShell';
 import Essays from './components/Essays';
 import EssayDashboard from './components/EssayDashboard';
 
@@ -18,7 +18,7 @@ export default function App() {
       <Routes>
       <Route path ={"/"} element={<LogIn/>}/>
       <Route path ={"/register"} element={<Register/>}/>
-      <Route path ={"/home"} element={<Home/>}/>
+      <Route path ={"/essayReview"} element={<EssayReviewShell/>}/>
       <Route path ={"/essays"} element={<Essays/>}/>
       <Route path ={"/essayDashboard"} element={<EssayDashboard/>}/>
 
