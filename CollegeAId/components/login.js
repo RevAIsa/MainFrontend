@@ -13,14 +13,17 @@ import useToken from '../contexts/useToken';
 import AuthContext from '../contexts/AuthProvider';
 import axios from '../api/axios';
 const LOGIN_URL = '/auth/login';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { registerUser, userLogin } from './features/auth/authActions';
 
 const LogIn = () => {
   //const { setAuth } = useContext(AuthContext);
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
+  // const dispatch = useDispatch();
   const { token, setToken } = useToken();
-  const onFinish = async (values) => {
+  const onFinish = (values) => {
+    /*
     console.log(JSON.stringify({ email: values.username, password: values.password }));
     try {
       const response = await axios.post(LOGIN_URL,
@@ -38,6 +41,8 @@ const LogIn = () => {
         setErrMsg('Login Failed');
       }
     }
+    */
+    dispatch(userLogin(values.email, values.password))
   };
 
   const onRegister = () => {
@@ -47,7 +52,7 @@ const LogIn = () => {
     console.log('Failed:', errorInfo);
   };
 
-  return <Form
+  return (<Form
     name="basic"
     labelCol={{
       span: 8,
@@ -115,7 +120,7 @@ const LogIn = () => {
         Register
       </Button>
     </Form.Item>
-  </Form>;
+  </Form>)
 
 }
 

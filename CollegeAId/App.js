@@ -1,34 +1,32 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import {BrowserRouter,
-  Routes, //replaces "Switch" used till v5
-  Route,
+import {
+  BrowserRouter, Route,
+  Routes, //replaces "Switch" used till v5 
 } from "react-router-dom";
-import { Button, Checkbox, Form, Input } from 'antd';
 import LogIn from './components/login';
 import Register from './components/register';
 import Home from './components/home';
 import Essays from './components/Essays';
-
-export default function App() {
+import { store } from './components/reduxStore';
+import { Provider } from 'react-redux';
+function App() {
   return (
-    <BrowserRouter>
-    <View style={styles.container}>
-      <Routes>
-      <Route path ={"/"} element={<LogIn/>}/>
-      <Route path ={"/register"} element={<Register/>}/>
-      <Route path ={"/home"} element={<Home/>}/>
-      <Route path ={"/essays"} element={<Essays/>}/>
+    <Provider store={store}>
+      <BrowserRouter>
 
-      </Routes>
-      
-     
+        <View style={styles.container}>
+          <Routes>
+            <Route path={"/"} element={<LogIn />} />
+            <Route path={"/register"} element={<Register />} />
+            <Route path={"/home"} element={<Home />} />
+            <Route path={"/essays"} element={<Essays />} />
+          </Routes>
+          <StatusBar style="auto" />
+        </View>
 
-      <StatusBar style="auto" />
-
-    </View>
-    </BrowserRouter>
-
+      </BrowserRouter>
+    </Provider>
   );
 }
 
@@ -40,3 +38,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+
+export default App

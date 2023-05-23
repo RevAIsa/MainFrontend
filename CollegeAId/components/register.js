@@ -1,7 +1,8 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import {BrowserRouter,
+import {
+  BrowserRouter,
   Routes, //replaces "Switch" used till v5
   Route,
 } from "react-router-dom";
@@ -13,13 +14,18 @@ import AuthContext from '../contexts/AuthProvider';
 import axios from '../api/axios';
 const REGISTER_URL = '/auth/register';
 const LOGIN_URL = '/auth/login';
-
+import { useDispatch, useSelector } from 'react-redux'
+import { registerUser, userLogin } from './features/auth/authActions'
 
 const Register = () => {
-    const navigate = useNavigate();
-    const {token, setToken} = useToken();
-    const onFinish = async (values) => {
-      console.log( JSON.stringify({
+  const { loading, userInfo, error, success } = useSelector(
+    (state) => state.auth
+  );
+  //const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { token, setToken } = useToken();
+  const onFinish = (values) => {
+    /*  console.log( JSON.stringify({
         firstName: values.name,
         lastName: values.last,
         password: values.password,
@@ -37,38 +43,38 @@ const Register = () => {
             },
         );
         console.log(JSON.stringify(response_register));
+*/
 
+    dispatch(registerUser(values.name, values.last, values.password, values.email, values.grad))
+    dispatch(userLogin(values.email, values.password))
 
-        const response = await axios.post(LOGIN_URL,
-          {
-            email: values.email,
-            password: values.password,
-            },
-        );
-        console.log(JSON.stringify(response));
+    /* const response = await axios.post(LOGIN_URL,
+       {
+         email: values.email,
+         password: values.password,
+       },
+     );
+     console.log(JSON.stringify(response));
+ 
+     const accessToken = response?.data?.token;
+     setToken(accessToken);
+     navigate('/home')
+ */
+  };
 
-        const accessToken = response?.data?.token;
-        setToken(accessToken);
-        navigate('/home')
-    } catch (err) {
-      console.log(err);
-        if (!err?.response) {
-            setErrMsg('No Server Response');
-        }  else {
-            setErrMsg('Login Failed');
-        }
-          }
-      };
+  useEffect(() => {
+    // redirect authenticated user to profile screen
+    if (userInfo) navigate('/home')
+  }, [navigate, userInfo, success])
 
+  const onBack = () => {
+    navigate('/')
+  };
+  const onFinishFailed = (errorInfo) => {
+    console.log('Failed:', errorInfo);
+  };
 
-      const onBack = () => {
-        navigate('/')
-      };
-      const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-      };
-
-return <Form
+  return <Form
     name="basic"
     labelCol={{
       span: 10,
@@ -86,7 +92,7 @@ return <Form
     onFinishFailed={onFinishFailed}
     autoComplete="off"
   >
- <Form.Item
+    <Form.Item
       label="First Name"
       name="name"
       rules={[
@@ -170,14 +176,14 @@ return <Form
       }}
     >
       <Button type="primary" htmlType="Register">
-      Register
+        Register
       </Button>
       <Button onClick={onBack} htmlType="Back">
         back
       </Button>
     </Form.Item>
   </Form>;
- 
+
 }
 
 export default Register;
