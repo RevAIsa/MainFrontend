@@ -1,0 +1,66 @@
+/* AddEssayForm.css */
+
+.essay-form {
+    padding: 20px;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+  }
+  
+  .essay-form h2 {
+    margin-bottom: 20px;
+  }
+  
+  .form-field {
+    margin-bottom: 15px;
+  }
+  
+  .form-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .form-field input,
+  .form-field textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .taller-prompt {
+    height: 150px; /* Adjust the height as desired */
+  }
+  
+  .submit-button {
+    padding: 10px 20px;
+    background-color: #0d490d;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .submit-button:hover {
+    background-color: #0a3d0a;
+  }
+
+  .custom-file-upload {
+    display: inline-block;
+    background-color: white;
+    color: #0d490d;
+    padding: 6px 12px;
+    border: 1px solid #0d490d;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .custom-file-upload:hover {
+    background-color: #f5f5f5;
+  }
+  
+  .custom-file-upload input[type="file"] {
+    display: none;
+  }
+  
