@@ -1,7 +1,8 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import {BrowserRouter,
+import {
+  BrowserRouter,
   Routes, //replaces "Switch" used till v5
   Route,
 } from "react-router-dom";
@@ -15,38 +16,38 @@ const LOGIN_URL = '/auth/login';
 
 
 const LogIn = () => {
-    //const { setAuth } = useContext(AuthContext);
-    const navigate = useNavigate();
-  
-    const {token, setToken} = useToken();
-    const onFinish = async (values) => {
-      console.log( JSON.stringify({email: values.username ,password: values.password }));
-      try {
-        const response = await axios.post(LOGIN_URL,
-          {email: values.username ,password: values.password },
-        );
-        console.log(JSON.stringify(response));
-        const accessToken = response?.data;
-        setToken(accessToken);
-        navigate('/essays')
+  //const { setAuth } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const { token, setToken } = useToken();
+  const onFinish = async (values) => {
+    console.log(JSON.stringify({ email: values.username, password: values.password }));
+    try {
+      const response = await axios.post(LOGIN_URL,
+        { email: values.username, password: values.password },
+      );
+      console.log(JSON.stringify(response));
+      const accessToken = response?.data;
+      setToken(accessToken);
+      navigate('/essays')
     } catch (err) {
       console.log(err);
-        if (!err?.response) {
-            setErrMsg('No Server Response');
-        }  else {
-            setErrMsg('Login Failed');
-        }
-          }
-      };
+      if (!err?.response) {
+        setErrMsg('No Server Response');
+      } else {
+        setErrMsg('Login Failed');
+      }
+    }
+  };
 
-      const onRegister = () => {
-        navigate('/register')
-      };
-      const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-      };
+  const onRegister = () => {
+    navigate('/register')
+  };
+  const onFinishFailed = (errorInfo) => {
+    console.log('Failed:', errorInfo);
+  };
 
-return <Form
+  return <Form
     name="basic"
     labelCol={{
       span: 8,
@@ -115,7 +116,7 @@ return <Form
       </Button>
     </Form.Item>
   </Form>;
- 
+
 }
 
 export default LogIn;

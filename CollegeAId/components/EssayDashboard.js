@@ -113,7 +113,7 @@ const EssayDashboard = () => {
           handleCancel();
 
     } catch (error) {
-        console.log(`There was an error: ${error}`)
+      console.log(`There was an error: ${error}`)
     }
   };
 
@@ -161,26 +161,26 @@ const EssayDashboard = () => {
             </button>
           </div>
 
-                    <Modal
-                title="Upload New Essay"
-                open={isModalVisible}
-                onCancel={handleCancel}
-                footer={[
-                <Button key="cancel" onClick={handleCancel}>
-                    Cancel
-                </Button>,
-                <Button
-                    key="confirm"
-                    type="primary"
-                    style={{ backgroundColor: '#0d490d', borderColor: '#0d490d' }}
-                    onClick={handleSaveNewEssay}
-                >
-                    Confirm
-                </Button>,
-                ]}
-            >
-                {isAddingEssay && <AddEssayForm onCloseForm={handleCloseForm} />}
-            </Modal>
+          <Modal
+            title="Upload New Essay"
+            open={isModalVisible}
+            onCancel={handleCancel}
+            footer={[
+              <Button key="cancel" onClick={handleCancel}>
+                Cancel
+              </Button>,
+              <Button
+                key="confirm"
+                type="primary"
+                style={{ backgroundColor: '#0d490d', borderColor: '#0d490d' }}
+                onClick={handleSaveNewEssay}
+              >
+                Confirm
+              </Button>,
+            ]}
+          >
+            {isAddingEssay && <AddEssayForm onCloseForm={handleCloseForm} />}
+          </Modal>
 
           {/* Render remaining essay cards by mapping each element in the essays array to one card*/}
           {/* Store the necessary variables so that the edit and delete functions can be implemented properly */}
