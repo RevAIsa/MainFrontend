@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 // defines an EssayCard component which is used to display a users different essays on their dashboard
 // essay cards have a title lable, a lastUpdated label, an edit button, and a delete button
-const EssayCard = ({ id, title, lastUpdated, onDelete }) => {
+const EssayCard = ({ id, title, lastUpdated, onEdit, onDelete, onEditClick }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const navigate = useNavigate();
   
@@ -20,11 +20,11 @@ const EssayCard = ({ id, title, lastUpdated, onDelete }) => {
     const handleConfirmDelete = () => {
     //   onDelete();
         navigate(`/`);
-      setIsModalVisible(false);
+    //   setIsModalVisible(false);
     };
   
     const handleEditClick = () => {
-      navigate(`/`);
+    //   navigate(`/`);
     };
   
     return (
@@ -32,7 +32,7 @@ const EssayCard = ({ id, title, lastUpdated, onDelete }) => {
         <h2>{title}</h2>
         <p>Last Updated: {lastUpdated}</p>
         <Space>
-          <Button icon={<EditOutlined />} onClick={handleEditClick}>
+          <Button icon={<EditOutlined />} onClick={onEditClick}>
             Edit
           </Button>
           <Button icon={<DeleteOutlined />} onClick={handleDeleteClick} danger>
