@@ -1,61 +1,52 @@
 import React from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import {BrowserRouter,
-  Routes, //replaces "Switch" used till v5
-  Route,
-} from "react-router-dom";
-import { Button, Checkbox, Form, Input,  } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import { Breadcrumb, Layout, Menu, theme, Col, Row, Tabs} from 'antd';
-import useToken from '../contexts/useToken';
-import {LogoutOutlined,RollbackOutlined} from '@ant-design/icons';
-const { Header, Content, Footer } = Layout;
-const { TextArea } = Input;
+import { StyleSheet, Text } from 'react-native';
+import { Button } from 'antd';
+import { Layout } from 'antd';
+import { LogoutOutlined, RollbackOutlined } from '@ant-design/icons';
 
-export function  NavBar(props){
+// import assets
+import Logo from "../assets/collegeaid_logo.png"
 
-    return <Header
-    theme="dark"
-     style={{
-       display: 'flex',
-       alignItems: 'center',
-       justifyContent:"space-between",
-       marginBottom: 10,
-    
-     }}
+const { Header } = Layout;
+
+export function NavBar(props) {
+  return (
+    <Header
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 10,
+        backgroundColor: 'white', // Set the background color to white
+        boxShadow: '0 2px 8px #f0f1f2', // Optional: Add a box shadow
+      }}
     >
-    
-     <Text style={styles.baseText}> CollegeAId </Text>
-     <div>
+      <img src={Logo} alt="Logo" style={styles.logo} />
+      <div>
+        {props.onBack && (
+          <Button onClick={props.onBack} htmlType="back">
+            <Text>My Essays </Text>
+            <RollbackOutlined />
+          </Button>
+        )}
+        <Button onClick={props.onLogOut} htmlType="logout">
+          <Text>Log Out </Text>
+          <LogoutOutlined />
+        </Button>
+      </div>
+    </Header>
+  );
+}
 
-    {  props.onBack && <Button  onClick={props.onBack} htmlType="back">
-     <Text>My Essays  </Text>
-     <RollbackOutlined />
-    </Button>   
-     }
+const styles = StyleSheet.create({
+  baseText: {
+    fontWeight: 'bold',
+    color: 'black',
+  },
+  logo: {
+    width: '140px', // Adjust the width of the logo as needed
+    height: 'auto', // Maintain the aspect ratio of the logo
+  },
+});
 
-
-     <Button  onClick={props.onLogOut} htmlType="logout">
-    <Text>Log Out   </Text>
-     <LogoutOutlined />
-    </Button>
-    </div>
-    </Header>;
-  };
-
-
-  const styles = StyleSheet.create({
-    baseText: {
-      fontWeight: 'bold',
-      color: 'white',
-    },
-
-
-    othertest: {
-
-
-
-      
-    }
-  });
+export default NavBar;

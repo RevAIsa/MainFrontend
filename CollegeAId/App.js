@@ -9,6 +9,7 @@ import LogIn from './components/login';
 import Register from './components/register';
 import Home from './components/home';
 import Essays from './components/Essays';
+import EssayDashboard from './components/EssayDashboard';
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
       <Route path ={"/register"} element={<Register/>}/>
       <Route path ={"/home"} element={<Home/>}/>
       <Route path ={"/essays"} element={<Essays/>}/>
+      <Route path ={"/essayDashboard"} element={<EssayDashboard/>}/>
 
       </Routes>
       
