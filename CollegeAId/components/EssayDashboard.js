@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import EssayCard from './EssayCard';
 import AddEssayForm from './AddEssayForm';
 import NavBar from './NavBar';
@@ -11,13 +11,15 @@ import axios from '../api/axios';
 import '../styles/AddEssayForm.css';
 
 // api paths
-const UPLOAD_URL = '/essay/upload';
+const UPLOAD_ESSAY_URL = '/essay/upload';
+const GET_ALL_ESSAYS_URL = '/essay/getAll/6466784bb64c104c502d677c'
 
 const EssayDashboard = () => {
   // state hooks for the essay dashboard
   const [isAddingEssay, setIsAddingEssay] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [formValues, setFormValues] = useState(null);
+  const [essays, setEssays] = useState([]);
 
   const navigate = useNavigate();
 
@@ -25,8 +27,9 @@ const EssayDashboard = () => {
     navigate('/');
   };
 
-  const handleEdit = () => {
+  const handleEditClick = (essayId) => {
     // Logic for editing the essay
+    console.log(essayId)
   };
 
   const handleDelete = () => {
@@ -48,29 +51,66 @@ const EssayDashboard = () => {
     setIsModalVisible(true);
   };
 
+  const getAllEssays = async () => {
+    try {
+        // get the current user's essay array from the database
+        const response = await axios.get(GET_ALL_ESSAYS_URL);
+        const fetchedEssays = response.data.essays;
+
+        // convert all of the dates into the proper string format
+        fetchedEssays.forEach((essay) => {
+            const utcString = essay.updatedAt;
+            const date = new Date(utcString);
+            const estDateString = date.toLocaleString('en-US', {
+                timeZone: 'America/New_York',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric'
+              });
+            essay.updatedAt = estDateString;
+        });
+        
+        // set the essays state variable equal to the fetched essays 
+        setEssays(fetchedEssays);
+        console.log(fetchedEssays);
+
+
+    } catch (error) {
+        console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getAllEssays();
+  }, []); // Call getAllEssays only once when the component mounts
+
   const handleSaveNewEssay = async () => {
     try {
 
-      const essayData = {
-        userId: "6466784bb64c104c502d677c",
-        customFileName: document.getElementById('essay-title').value,
-        prompt: document.getElementById('essay-prompt').value,
-        essay: document.getElementById('essay-file').files[0],
-      };
+        const essayData = {
+            userId: "6466784bb64c104c502d677c",
+            customFileName: document.getElementById('essay-title').value,
+            prompt: document.getElementById('essay-prompt').value,
+            essay: document.getElementById('essay-file').files[0],
+          };
+        
+          console.log(essayData);
+          setFormValues(formValues);
+          console.log('No this is:', essayData);
+      
+          // make a call to the api ./essay/upload
+          const response = await axios.post(UPLOAD_ESSAY_URL, essayData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });    
 
-      console.log(essayData);
-      setFormValues(formValues);
-      console.log('No this is:', essayData);
-
-      // make a call to the api ./essay/upload
-      const response = await axios.post(UPLOAD_URL, essayData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      console.log(response)
-      handleCancel();
+          getAllEssays();
+      
+          console.log(response)
+          handleCancel();
 
     } catch (error) {
       console.log(`There was an error: ${error}`)
@@ -142,18 +182,20 @@ const EssayDashboard = () => {
             {isAddingEssay && <AddEssayForm onCloseForm={handleCloseForm} />}
           </Modal>
 
-          {/* Render remaining essay cards */}
-          {[...Array(9)].map((_, index) => (
-            <div key={index}>
-              <EssayCard
-                id={index + 1}
-                title={`Essay ${index + 1}`}
-                lastUpdated="2023-05-22"
-                onEdit={handleEdit}
+          {/* Render remaining essay cards by mapping each element in the essays array to one card*/}
+          {/* Store the necessary variables so that the edit and delete functions can be implemented properly */}
+          {essays.map((essay) => (
+            <div key={essay._id}>
+            <EssayCard
+                id={essay._id}
+                title={essay.customFileName}
+                lastUpdated={essay.updatedAt}
+                onEditClick={() => handleEditClick(essay._id)}
                 onDelete={handleDelete}
-              />
+            />
             </div>
-          ))}
+        ))}
+          
         </div>
       </div>
     </Layout>
