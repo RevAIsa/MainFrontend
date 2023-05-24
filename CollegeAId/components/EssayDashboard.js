@@ -6,6 +6,7 @@ import { Layout, Modal, Button } from 'antd';
 import EssayIcon from '../assets/essay_icon_white.png';
 import { useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
+import { useSignOut } from 'react-auth-kit';
 
 // import style sheets
 import '../styles/AddEssayForm.css';
@@ -24,10 +25,12 @@ const EssayDashboard = () => {
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [deleteEssayId, setDeleteEssayId] = useState('');
 
-
   const navigate = useNavigate();
+  const signOut = useSignOut();
 
   const onLogOut = () => {
+    
+    signOut();
     navigate('/');
   };
 

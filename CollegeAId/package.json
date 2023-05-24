@@ -11,16 +11,20 @@
   "dependencies": {
     "@ant-design/icons": "^5.1.0",
     "@expo/webpack-config": "^18.0.1",
+    "@reduxjs/toolkit": "^1.9.5",
     "antd": "^5.5.0",
     "axios": "^1.4.0",
     "expo": "^48.0.17",
     "expo-status-bar": "~1.4.4",
     "react": "18.2.0",
+    "react-auth-kit": "^2.12.2",
     "react-dom": "18.2.0",
     "react-native": "0.71.7",
     "react-native-web": "~0.18.10",
+    "react-redux": "^8.0.5",
     "react-router-dom": "^6.11.1",
-    "realm-web": "^2.0.0"
+    "realm-web": "^2.0.0",
+    "zustand": "^4.3.8"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
