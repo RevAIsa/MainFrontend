@@ -7,13 +7,14 @@ import EssayIcon from '../assets/essay_icon_white.png';
 import { useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
 import { useSignOut } from 'react-auth-kit';
+import useStore from "../Store"
 
 // import style sheets
 import '../styles/AddEssayForm.css';
 
 // api paths
 const UPLOAD_ESSAY_STRING_URL = '/essay/uploadEssayString';
-const GET_ALL_ESSAYS_URL = '/essay/getAll/6466784bb64c104c502d677c'
+const GET_ALL_ESSAYS_URL = '/essay/getAll/:userId'
 const DELETE_ESSAY_URL = '/essay/'
 
 const EssayDashboard = () => {
@@ -25,11 +26,13 @@ const EssayDashboard = () => {
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [deleteEssayId, setDeleteEssayId] = useState('');
 
+  // zustand states
+  const userId = useStore(state => state.userId);
+
   const navigate = useNavigate();
   const signOut = useSignOut();
 
   const onLogOut = () => {
-    
     signOut();
     navigate('/');
   };
@@ -97,8 +100,13 @@ const EssayDashboard = () => {
 
   const getAllEssays = async () => {
     try {
+
+      const USERS_GET_ALL_ESSAYS_URL = GET_ALL_ESSAYS_URL.replace(':userId', userId);
+      console.log(USERS_GET_ALL_ESSAYS_URL)
+      console.log(userId);
+
         // get the current user's essay array from the database
-        const response = await axios.get(GET_ALL_ESSAYS_URL);
+        const response = await axios.get(USERS_GET_ALL_ESSAYS_URL);
         const fetchedEssays = response.data.essays;
 
         // convert all of the dates into the proper string format
@@ -134,14 +142,14 @@ const EssayDashboard = () => {
     try {
 
         const essayData = {
-            userId: "6466784bb64c104c502d677c",
+            userId: userId,
             customFileName: document.getElementById('essay-title').value,
             prompt: document.getElementById('essay-prompt').value,
             essayString: document.getElementById('essay-string').value,
           };
         
           console.log(essayData);
-          setFormValues(formValues);
+          setFormValues(essayData);
       
           // make a call to the api ./essay/upload
           const response = await axios.post(UPLOAD_ESSAY_STRING_URL, essayData);   

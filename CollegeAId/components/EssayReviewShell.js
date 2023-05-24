@@ -7,6 +7,7 @@ import { NavBar } from './NavBar';
 const { Content, Footer } = Layout;
 import axios from '../api/axios';
 import { useSignOut } from 'react-auth-kit';
+import useStore from "../Store"
 
 // api paths
 const UPDATE_ESSAY_URL = "/essay/"
@@ -21,6 +22,9 @@ const EssayReviewShell = () => {
     const location = useLocation();
     const { essayId } = location.state;
     const [essay, setEssay] = useState(' ');
+
+    // zustand states
+    const userId = useStore(state => state.userId);
 
       // navigate back to the essay dashboard when the back button is clicked
       const onBack = () => {
@@ -39,7 +43,7 @@ const EssayReviewShell = () => {
 
             const response = await axios.patch(UPDATE_ESSAY_URL, {
               essayId: essayId, 
-              userId: "6466784bb64c104c502d677c",
+              userId: userId,
               newEssayString: essay
             });
 
