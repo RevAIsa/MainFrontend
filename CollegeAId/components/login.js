@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button, Form, Input, Alert } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useSignIn } from 'react-auth-kit';
-import useToken from '../contexts/useToken';
 import axios from '../api/axios';
 import '../styles/Login.css';
-
+import useStore from "../Store";
 
 // import assets
 import Logo from "../assets/collegeaid_logo.png"
@@ -18,8 +17,28 @@ const LogIn = () => {
   // create state variables 
   const [errorMessage, setErrorMessage] = useState();
 
+  // zustand state function to setUserId
+  const setUserId = useStore(state => state.setUserId);
+
   const navigate = useNavigate();
   const signIn = useSignIn();
+
+  const formRef = useRef(null);
+
+  // trigger the login button when the enter key is pressed on the keyboard
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      formRef.current.submit();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyPress);
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, []);
 
   // this is the logic for the login process 
   // this we need to log the user in, add the token to their cookies, and then go to that users essayDashbaord
@@ -40,6 +59,9 @@ const LogIn = () => {
         tokenType: "Bearer",
         authState: ({ email: values.email })
       });
+
+      // set the zustandglobal state userId to the logged in users id
+      setUserId(response.data.userId);
 
       navigate("/essayDashboard");
 
@@ -69,6 +91,7 @@ const LogIn = () => {
     <div className='register-container'>
       <img src={Logo} alt="Logo" className='logo-image' />
       <Form
+        ref={formRef}
         name="basic"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
@@ -104,7 +127,7 @@ const LogIn = () => {
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button onClick={onRegister} htmlType="register" className='registerButton'>
+        <Button onClick={onRegister} htmlType="register" className='registerButton'>
             Register
           </Button>
           <Button type="primary" htmlType="submit" className="login-button">

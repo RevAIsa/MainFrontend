@@ -1,10 +1,11 @@
-import React from 'react';
-import { Button, Form, Input } from 'antd';
+import React, { useState } from 'react';
+import { Button, Form, Input, Alert } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import useToken from '../contexts/useToken';
 import axios from '../api/axios';
 import "../styles/Register.css"
 import { useSignIn } from 'react-auth-kit';
+import useStore from "../Store";
 
 const REGISTER_URL = '/auth/register';
 const LOGIN_URL = '/auth/login';
@@ -13,16 +14,23 @@ const LOGIN_URL = '/auth/login';
 import Logo from "../assets/collegeaid_logo.png"
 
 const Register = () => {
+
+  // create state variables 
+  const [errorMessage, setErrorMessage] = useState();
+
   const navigate = useNavigate();
   const signIn = useSignIn();
 
+  // zustand state function to setUserId
+  const setUserId = useStore(state => state.setUserId);
+
   const onFinish = async (values) => {
     console.log(JSON.stringify({
-      firstName: values.name,
-      lastName: values.last,
+      firstName: values.firstname,
+      lastName: values.lastname,
       password: values.password,
       email: values.email,
-      graduationYear: values.grad
+      graduationYear: values.graduationyear
     }));
 
     try {
@@ -32,7 +40,8 @@ const Register = () => {
         lastName: values.last,
         password: values.password,
         email: values.email,
-        graduationYear: values.grad
+        graduationYear: values.grad, 
+        essays: []
       });
       console.log(JSON.stringify(response_register));
 
@@ -51,10 +60,22 @@ const Register = () => {
         authState: ({ email: values.email })
       });
 
+      // set the zustand global state userId to the logged in users id
+      setUserId(response.data.userId);
+
       navigate("/essayDashboard");
 
     } catch (error) {
-      console.log(error);
+
+      // show a username or password error if username or password was incorrect
+      if (error.response && error.response.status === 400) {
+
+        const { message } = error.response.data;
+        setErrorMessage(message);
+
+      } else {
+        console.log(error);
+      }
     }
   };
 
@@ -89,6 +110,15 @@ const Register = () => {
             autoComplete="off"
             className='register-form'
           >
+          {errorMessage && (
+              <Alert
+              message={errorMessage}
+              type="error"
+              showIcon
+              closable
+              onClose={() => setErrorMessage('')}
+              />
+          )}
             <Form.Item
               label="First Name"
               name="firstname"
