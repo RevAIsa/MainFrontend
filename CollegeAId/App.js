@@ -4,9 +4,8 @@ import {BrowserRouter,
   Routes, //replaces "Switch" used till v5
   Route,
 } from "react-router-dom";
-import { Button, Checkbox, Form, Input } from 'antd';
 import LogIn from './components/login';
-import Register from './components/register';
+import Register from './components/Register';
 import EssayReviewShell from './components/EssayReviewShell';
 import Essays from './components/Essays';
 import EssayDashboard from './components/EssayDashboard';

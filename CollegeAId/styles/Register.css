@@ -1,0 +1,65 @@
+/* AddEssayForm.css */
+
+.register-button {
+    background-color: #0d490d;
+  }
+  
+  .register-button:hover {
+    background-color: #157415 !important; /* New hover color */
+  }
+  
+  .register-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Align items to the top */
+    height: 100vh;
+  }
+  
+  .logo-image {
+    max-width: 100%; /* Ensure the logo image doesn't exceed the container width */
+    margin-bottom: 80px; /* Decrease the space between the logo image and form container */
+    margin-top: 80px;
+  }
+  
+  .form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; /* Adjust the width as needed */
+    max-width: 600px; /* Set a maximum width for the form */
+    margin-top: 1rem;
+    margin-left: -10%;
+  }
+  
+  .register-button,
+  .back-button {
+    margin-top: 40px; /* Increase spacing between buttons and form */
+  }
+  
+  /* Set different logo sizes for different screen widths */
+  @media (min-width: 576px) {
+    .logo-image {
+      width: 337.5px; /* 50% bigger than 225px */
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .logo-image {
+      width: 505.5px; /* 50% bigger than 337px */
+    }
+  }
+  
+  @media (min-width: 992px) {
+    .logo-image {
+      width: 675px; /* 50% bigger than 450px */
+    }
+  }
+  
+  @media (min-width: 1200px) {
+    .logo-image {
+      width: 843px; /* 50% bigger than 562px */
+    }
+  }
+  
+  
