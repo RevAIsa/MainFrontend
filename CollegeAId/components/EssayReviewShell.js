@@ -6,6 +6,7 @@ import EssayReviewer from "./EssayReviewer";
 import { NavBar } from './NavBar';
 const { Content, Footer } = Layout;
 import axios from '../api/axios';
+import { useSignOut } from 'react-auth-kit';
 
 // api paths
 const UPDATE_ESSAY_URL = "/essay/"
@@ -14,6 +15,7 @@ const EssayReviewShell = () => {
     const {token, setToken} = useToken();
     console.log(token)
     const navigate = useNavigate();
+    const signOut = useSignOut();
 
     // set the state variables
     const location = useLocation();
@@ -27,6 +29,8 @@ const EssayReviewShell = () => {
 
       // navigate to the login screen when the log out button is clicked
       const onLogOut = () => {
+
+        signOut();
         navigate('/')
       };
       

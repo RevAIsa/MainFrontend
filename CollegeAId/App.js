@@ -9,27 +9,49 @@ import Register from './components/Register';
 import EssayReviewShell from './components/EssayReviewShell';
 import Essays from './components/Essays';
 import EssayDashboard from './components/EssayDashboard';
+import { AuthProvider, RequireAuth } from 'react-auth-kit';
 
 export default function App() {
   return (
-    <BrowserRouter>
-    <View style={styles.container}>
-      <Routes>
-      <Route path ={"/"} element={<LogIn/>}/>
-      <Route path ={"/register"} element={<Register/>}/>
-      <Route path ={"/essayReview"} element={<EssayReviewShell/>}/>
-      <Route path ={"/essays"} element={<Essays/>}/>
-      <Route path ={"/essayDashboard"} element={<EssayDashboard/>}/>
+    <AuthProvider
+      authType={'cookie'}
+      authName={'auth_token'}
+      cookieDomain={window.location.hostname}
+      cookieSecure={false}
 
-      </Routes>
+    >
+      <BrowserRouter>
+      <View style={styles.container}>
+
+        {/* Each route is given seperation to allow for visual consistency and protected routes
+            To set a new route: impot the component, set path and name. See essayDashboard for protected route example. */}
+        <Routes>
+
+          {/* Unprotected routes. */}
+          <Route path ={"/"} element={<LogIn/>}/>
+          <Route path ={"/register"} element={<Register/>}/>
       
-     
+          <Route path ={"/essays"} element={<Essays/>}/>
 
-      <StatusBar style="auto" />
+          {/* The dashboard that holds all of the users essays. Protected. */}
+          <Route path ={"/essayDashboard"} element={<RequireAuth loginPath='/'>
+              <EssayDashboard/>
+          </RequireAuth>}/>
 
-    </View>
-    </BrowserRouter>
+          {/* The AI interface that a user can use to improve their essays. Protected. */}
+          <Route path ={"/essayReview"} element={<RequireAuth loginPath='/'>
+              <EssayReviewShell/>
+          </RequireAuth>}/>
 
+        </Routes>
+        
+      
+
+        <StatusBar style="auto" />
+
+      </View>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

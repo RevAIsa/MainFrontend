@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import useToken from '../contexts/useToken';
 import axios from '../api/axios';
 import "../styles/Register.css"
+import { useSignIn } from 'react-auth-kit';
 
 const REGISTER_URL = '/auth/register';
 const LOGIN_URL = '/auth/login';
@@ -13,7 +14,7 @@ import Logo from "../assets/collegeaid_logo.png"
 
 const Register = () => {
   const navigate = useNavigate();
-  const { token, setToken } = useToken();
+  const signIn = useSignIn();
 
   const onFinish = async (values) => {
     console.log(JSON.stringify({
@@ -42,9 +43,16 @@ const Register = () => {
       });
       console.log(JSON.stringify(response));
 
-      const accessToken = response?.data?.token;
-      setToken(accessToken);
-      navigate('/essayDashboard');
+      // use signIn from react-auth-kit to store the cookie
+      signIn({
+        token: response.data.token,
+        expiresIn: 3600,
+        tokenType: "Bearer",
+        authState: ({ email: values.email })
+      });
+
+      navigate("/essayDashboard");
+
     } catch (error) {
       console.log(error);
     }

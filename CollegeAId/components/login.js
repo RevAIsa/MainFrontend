@@ -1,9 +1,11 @@
-import React from 'react';
-import { Button, Form, Input } from 'antd';
+import React, { useState } from 'react';
+import { Button, Form, Input, Alert } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { useSignIn } from 'react-auth-kit';
 import useToken from '../contexts/useToken';
 import axios from '../api/axios';
 import '../styles/Login.css';
+
 
 // import assets
 import Logo from "../assets/collegeaid_logo.png"
@@ -12,27 +14,48 @@ import Logo from "../assets/collegeaid_logo.png"
 const LOGIN_URL = '/auth/login';
 
 const LogIn = () => {
+
+  // create state variables 
+  const [errorMessage, setErrorMessage] = useState();
+
   const navigate = useNavigate();
-  const { token, setToken } = useToken();
+  const signIn = useSignIn();
 
+  // this is the logic for the login process 
+  // this we need to log the user in, add the token to their cookies, and then go to that users essayDashbaord
   const onFinish = async (values) => {
-    console.log(JSON.stringify({ email: values.username, password: values.password }));
-
     try {
-      const response = await axios.post(LOGIN_URL, { email: values.username, password: values.password });
-      console.log(JSON.stringify(response));
-      const accessToken = response?.data;
-      setToken(accessToken);
-      navigate('/essays');
-    } catch (err) {
-      console.log(err);
-      if (!err?.response) {
-        setErrMsg('No Server Response');
+
+      // get the login response from the server
+      const response = await axios.post(LOGIN_URL, {
+        email: values.email, 
+        password: values.password
+      });
+      console.log(response.data);
+
+      // use signIn from react-auth-kit to store the cookie
+      signIn({
+        token: response.data.token,
+        expiresIn: 3600,
+        tokenType: "Bearer",
+        authState: ({ email: values.email })
+      });
+
+      navigate("/essayDashboard");
+
+    } catch (error) {
+
+      // show a username or password error if username or password was incorrect
+      if (error.response && error.response.status === 400) {
+
+        const { message } = error.response.data;
+        setErrorMessage(message);
+
       } else {
-        setErrMsg('Login Failed');
+        console.log(error);
       }
     }
-  };
+  }
 
   const onRegister = () => {
     navigate('/register');
@@ -55,10 +78,19 @@ const LogIn = () => {
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
+        {errorMessage && (
+          <Alert
+          message={errorMessage}
+          type="error"
+          showIcon
+          closable
+         onClose={() => setErrorMessage('')}
+           />
+       )}
         <Form.Item
-          label="Username"
-          name="username"
-          rules={[{ required: true, message: 'Please input your username!' }]}
+          label="Email"
+          name="email"
+          rules={[{ required: true, message: 'Please input your email!' }]}
         >
           <Input />
         </Form.Item>
