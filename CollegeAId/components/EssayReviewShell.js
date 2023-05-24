@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Layout } from 'antd';
+import { Layout, Button } from 'antd';
 import useToken from '../contexts/useToken';
 import EssayReviewer from "./EssayReviewer";
 import { NavBar } from './NavBar';
 const { Content, Footer } = Layout;
+import axios from '../api/axios';
 
-
+// api paths
+const UPDATE_ESSAY_URL = "/essay/"
 
 const EssayReviewShell = () => {
     const {token, setToken} = useToken();
@@ -16,8 +18,7 @@ const EssayReviewShell = () => {
     // set the state variables
     const location = useLocation();
     const { essayId } = location.state;
-    console.log("Here is the essayId being passed to the EssayReviewShell");
-    console.log(essayId);
+    const [essay, setEssay] = useState(' ');
 
       // navigate back to the essay dashboard when the back button is clicked
       const onBack = () => {
@@ -27,6 +28,26 @@ const EssayReviewShell = () => {
       // navigate to the login screen when the log out button is clicked
       const onLogOut = () => {
         navigate('/')
+      };
+      
+      const handleSavePress = async () => {
+        try {
+
+            const response = await axios.patch(UPDATE_ESSAY_URL, {
+              essayId: essayId, 
+              userId: "6466784bb64c104c502d677c",
+              newEssayString: essay
+            });
+
+            console.log(response)
+
+        } catch (error) {
+          console.log(error)
+        }
+      };
+
+      const updateEssayInParent = (updatedEssay) => {
+        setEssay(updatedEssay); // Update the essay state in the parent component (EssayReviewShell)
       };
 
       // render the shell of the essay review page with th essay reviewer component inside it 
@@ -47,9 +68,18 @@ const EssayReviewShell = () => {
                 }}
               >
               
-              <EssayReviewer essayId={essayId} />
+              <EssayReviewer essayId={essayId} updateEssayInParent={updateEssayInParent}/>
+
+              <Button
+                type="primary"
+                style={{ backgroundColor: '#0d490d', borderColor: '#0d490d', marginTop: '20px' }}
+                onClick={handleSavePress}
+                >
+                Save Essay
+              </Button>
 
               </div>
+              
             </Content>
             <Footer
               style={{

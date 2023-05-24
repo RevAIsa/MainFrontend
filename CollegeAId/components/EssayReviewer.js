@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, } from 'react-native';
+import { Text, Button } from 'react-native';
 import { Input, } from 'antd';
 import {  Col, Row, Tabs } from 'antd';
 const { TextArea } = Input;
@@ -10,7 +10,7 @@ const UPLOAD_ESSAY_URL = '/essay/upload';
 const GET_ESSAY_BY_ID_URL = '/essay/getOneString/:essayId';
 const GET_PROMPT_URL = '/suggestion/';
 
-const EssayReviewer = ({ essayId }) => {
+const EssayReviewer = ({ essayId, updateEssayInParent }) => {
 
   // state variables for a local version of the essay, the prompt array
   const [essay, updateEssay] = useState("");
@@ -49,6 +49,7 @@ const EssayReviewer = ({ essayId }) => {
 
       console.log(response.data);
       updateEssay(response.data.essayString);
+      updateEssayInParent(response.data.essayString);
       updateEssayPrompt(response.data.essayPrompt);
 
     } catch (error) {
@@ -98,8 +99,10 @@ const EssayReviewer = ({ essayId }) => {
   };
 
   // updates local version of essay
+  // also updates the local version of the essay in the parent component
   const onChange = (e) => {
     updateEssay(e.target.value);
+    updateEssayInParent(e.target.value);
   };
 
   //universal api call for all prompts
@@ -154,6 +157,14 @@ const EssayReviewer = ({ essayId }) => {
     onPrompt(items[key - 1].label, key - 1)
   };
 
+  // action performed when the save button is pressed
+  // should update the essay in the database with the contents of essay
+  const handleButtonPress = () => {
+    // Perform an action with the contents of the TextArea
+    console.log(essay);
+    // Add your custom logic here
+  };
+
   // returns the UI elements of the essay reviewer component along with their props
   // initially loads the essay into the text field based on the EssayReviewer's essayId prop
   return <Row justify="space-evenly" gutter={[24, 16]}>
@@ -169,7 +180,8 @@ const EssayReviewer = ({ essayId }) => {
       <Tabs defaultActiveKey="1" type="card" size={"small"}
         items={items}
         onTabClick={callbackTabClicked}
-      /></Col>
+      />
+      </Col>
   </Row>;
 }
 
