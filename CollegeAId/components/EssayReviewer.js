@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Text, Button } from 'react-native';
-import { Input, } from 'antd';
-import {  Col, Row, Tabs } from 'antd';
+import { Input, Spin } from 'antd';
+import {  Col, Row, Tabs, Button } from 'antd';
 const { TextArea } = Input;
 import axios from '../api/axios';
+import "../styles/EssayReviewer.css"
+import RecommendationCard from './RecommendationCard';
 
 // api paths
 const UPLOAD_ESSAY_URL = '/essay/upload';
@@ -15,7 +16,8 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
   // state variables for a local version of the essay, the prompt array
   const [essay, updateEssay] = useState("");
   const [essayPrompt, updateEssayPrompt] = useState("");
-  const [promptArray, updatePrompt] = useState(["Nothing to see yet!"].concat(["Loading..."]).concat(["Loading..."]).concat(["Loading..."]).concat(["Loading..."]).concat(["Loading..."]).concat(["Loading..."]));
+  const [promptArray, updatePrompt] = useState(["Nothing to see yet!"].concat([""]).concat([""]).concat([""]).concat([""]).concat([""]).concat([""]));
+  const [isLoading, setIsLoading] = useState(false);
 
   // use effect that is called each time the value of essayId changes
   useEffect(() => {
@@ -24,21 +26,47 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
 
   }, [essayId]);
 
-  // initialize tabs
-  const items = ["Hook", "Themes", "Grammar", "Voice", "Language", "Structure", "Relevance"].map((tabName, i) => {
+  // function to handle the button click
+  const handleCheckCardButtonClick = () => {
+
+  }
+
+  // function to handle the rereviewbuttonclick
+  // TODO
+  const handleReReviewButtonClick = () => {
+    console.log("Rereviewing the cards.")
+  }
+
+
+      // initialize tabs
+    const items = ["Hook", "Themes", "Grammar", "Voice", "Language", "Structure", "Relevance"].map((tabName, i) => {
     const id = String(i + 1);
+
+    // right now we are accessing the promptArray for the given inddex [id-1] and splitting it on its paragraphs into an array
+    // we are then maping each paragraph to a different child RecommendationCard
+    // I need to refactor items and id with better names and also use them to track keys instead of indexes
+    // instead what I can do is store a dictionary
+    // the dictionary key can by the "hook", "themes", "voice", etc (remove grammar - will need to handle hat some other way)
+    // each key will store an array of paragraph responses from that api
+    // add code saying that if you click My Essays or Log Out, you will lose the current response. 
+    // when updating the dictionary state variable (what is currently the prompt array), the paragraphs should re render
+    // if rereviewing, load the response only as a replacement to the text on the card that currently exists
+    // add ability to uncheck the card to make it white if it is currently green
+    // hook it up to the new api to get a new 
+    const paragraphs = promptArray[id - 1].split("\n\n");
     return {
       label: tabName,
       key: id,
-      children: <Text>{promptArray[id - 1]}</Text>, // converts the tabname, a string, into a variable - pretty nifty stuff.
-
-    };
-  });
-
-  const XMLToString = (xmlData) => {
-    const serializer = new XMLSerializer();
-    return serializer.serializeToString(xmlData);
-  };
+      children: paragraphs.map((paragraph, j) => (
+        <RecommendationCard
+          key={j}
+          text={paragraph}
+          onCheckButtonClick={handleCheckCardButtonClick}
+          onReReviewClick={handleReReviewButtonClick}
+          />
+        )),
+       };
+      });
 
   // fetches the essay from the api based on the essayId
   const fetchEssay = async() => {
@@ -78,26 +106,6 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
     }
   };
 
-  // how to get file? where does id go
-  const onLoad = async (values) => {
-    try {
-      const response_get_file = await axios.get(GET_FILE_URL,
-        {
-
-        },
-      );
-      console.log(JSON.stringify(response_get_file));
-
-    } catch (err) {
-      console.log(err);
-      if (!err?.response) {
-        setErrMsg('No Server Response');
-      } else {
-        setErrMsg('Login Failed');
-      }
-    }
-  };
-
   // updates local version of essay
   // also updates the local version of the essay in the parent component
   const onChange = (e) => {
@@ -111,20 +119,20 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
     var GET_THEME_URL = GET_PROMPT_URL + category
     console.log(GET_THEME_URL);
     console.log(key)
-    if (essay.split(" ").length > 200 && essay.split(" ").length < 5000) {
+    if (essay.split(" ").length > 10 && essay.split(" ").length < 5000) {
       try {
+        setIsLoading(true);
+        console.log("hello")
         const response_get_prompt = await axios.post(GET_THEME_URL,
           {
             essay: essay
           },
         );
         const text = response_get_prompt.data.response
+        console.log(response_get_prompt)
         console.log(text);
-        //  const lines = text.split('\n');
-        // console.log(line)
-        // const elements = lines.map((line, index) => (
-        //   <Text key={index}>{line}</Text>
-        // ));
+        console.log(GET_THEME_URL)
+        console.log(response_get_prompt)
 
         var newpromptArray = promptArray.map((c, i) => {
           if (i === key) {
@@ -147,6 +155,8 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
         } else {
           setErrMsg('Login Failed');
         }
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -172,7 +182,7 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
       <TextArea 
         showCount 
         onChange={onChange} 
-        style={{ height: 700, resize: 'none' }}
+        style={{ height: 700, resize: 'none', padding: "16px" }}
         value={essay} />
     </Col>
 
@@ -181,7 +191,15 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
         items={items}
         onTabClick={callbackTabClicked}
       />
-      </Col>
+    </Col>
+
+      {isLoading && (
+        <div className='spinner-container'>
+          <Spin size="large" />
+          <div>Loading...</div>
+        </div>
+      )}
+
   </Row>;
 }
 
