@@ -8,16 +8,16 @@ const RecommendationCard = ({ text, onCheckButtonClick, onReReviewClick }) => {
 
   const handleCheckClick = () => {
     if (cardColor === "white") {
-        setCardColor("#e0f7e0"); // Turn card green
-      } else {
-        setCardColor("white"); // Turn card white
-      }
-      onCheckButtonClick();
-    onCheckButtonClick();
+    setCardColor("#e0f7e0"); // Turn card green
+  } else {
+    setCardColor("white"); // Turn card white
+  }
+  onCheckButtonClick();
   };
 
   const handleReReviewClick = () => {
     onReReviewClick();
+    setCardColor("#f8e6ff") // turn card a light lavender
   };
 
   return (
