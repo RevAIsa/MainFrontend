@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
 import '../styles/RecommendationCard.css';
 
-const RecommendationCard = ({ text, onCheckButtonClick, onReReviewClick }) => {
+const RecommendationCard = ({ text, onCheckButtonClick, onReReviewClick, hideButtons }) => {
   const [cardColor, setCardColor] = useState("white");
 
   const handleCheckClick = () => {
@@ -26,21 +26,24 @@ const RecommendationCard = ({ text, onCheckButtonClick, onReReviewClick }) => {
         {text}
       </div>
       <Button
-        type="primary"
-        shape="circle"
-        icon={<CheckOutlined />}
-        className="recommendation-card-button"
-        onClick={handleCheckClick}
-      />
-      <Button
-        type="primary"
-        shape="rectangle"
-        className="recommendation-card-re-review-button"
-        onClick={handleReReviewClick}
-      >
-        Re-Review
-      </Button>
-    </div>
+            type="primary"
+            shape="circle"
+            icon={<CheckOutlined />}
+            className="recommendation-card-button"
+            onClick={handleCheckClick}
+          />
+      {!hideButtons && (
+        <>
+          <Button
+            type="primary"
+            shape="rectangle"
+            className="recommendation-card-re-review-button"
+            onClick={handleReReviewClick}
+          >
+            Re-Review
+          </Button>
+        </>
+      )}    </div>
   );
 };
 

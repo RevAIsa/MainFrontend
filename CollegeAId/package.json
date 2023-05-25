@@ -11,7 +11,9 @@
   "dependencies": {
     "@ant-design/icons": "^5.1.0",
     "@expo/webpack-config": "^18.0.1",
+    "@grammarly/editor-sdk-react": "^2.4.0",
     "@reduxjs/toolkit": "^1.9.5",
+    "@tinymce/tinymce-react": "^4.3.0",
     "antd": "^5.5.0",
     "axios": "^1.4.0",
     "expo": "^48.0.17",
@@ -24,6 +26,7 @@
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.11.1",
     "realm-web": "^2.0.0",
+    "tinymce": "^6.4.2",
     "zustand": "^4.3.8",
     "zustand-persist": "^0.4.0"
   },
