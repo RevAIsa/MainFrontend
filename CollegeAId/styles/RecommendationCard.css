@@ -1,0 +1,41 @@
+.recommendation-card {
+    margin: 10px;
+    padding: 20px;
+    border-radius: 10px;
+    padding-bottom: 25px;
+    position: relative;
+  }
+  
+  .recommendation-card-button {
+    background-color: #32a852;
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 1;
+  }
+
+  .recommendation-card-button:hover {
+    background-color: #0d490d !important;
+  }
+  
+  .recommendation-card-content {
+    padding-bottom: 30px;
+  }
+  
+  
+  .recommendation-card-re-review-button {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
+    position: absolute;
+    right: 50px;
+    bottom: 10px; /* Adjusted value for moving the button down */
+    z-index: 1;
+  }
+  
+  .recommendation-card-re-review-button:hover {
+    background-color: #0d490d  !important;
+    color: #ffffff !important;
+    border-color: #0d490d  !important;
+  }
+  
