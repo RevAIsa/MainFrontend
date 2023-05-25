@@ -30,3 +30,11 @@
     border-radius: 20px;
   }
   
+  .essay-reviewer-container {
+    height: calc(100vh - 200px); /* Adjust the subtracted value as needed */
+  }
+
+  .grammarly-underline {
+    z-index: 9999; /* Set a higher z-index value */
+  }
+  
