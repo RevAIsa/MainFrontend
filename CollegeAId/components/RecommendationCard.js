@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Button } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
 import '../styles/RecommendationCard.css';
+import useStore from "../Store";
 
-const RecommendationCard = ({ text, onCheckButtonClick, onReReviewClick, hideButtons }) => {
+const RecommendationCard = ({ text, onCheckButtonClick, toggleAssistant, onReReviewClick, hideButtons }) => {
   const [cardColor, setCardColor] = useState("white");
 
   const handleCheckClick = () => {
@@ -15,10 +16,18 @@ const RecommendationCard = ({ text, onCheckButtonClick, onReReviewClick, hideBut
   onCheckButtonClick();
   };
 
+
+  const setSelectedSuggestion = useStore(state => state.setSelectedSuggestion);
+
   const handleReReviewClick = () => {
     onReReviewClick();
     setCardColor("#f8e6ff") // turn card a light lavender
   };
+
+  const handleDiscussClick = () => {
+    setSelectedSuggestion(text)
+    toggleAssistant();
+  }
 
   return (
     <div className="recommendation-card" style={{ backgroundColor: cardColor }}>
@@ -34,6 +43,14 @@ const RecommendationCard = ({ text, onCheckButtonClick, onReReviewClick, hideBut
           />
       {!hideButtons && (
         <>
+          <Button 
+            type="primary"
+            shape="rectangle"
+            className="recommendation-card-assistant-button"
+            onClick={handleDiscussClick}
+          >
+            Discuss
+          </Button>
           <Button
             type="primary"
             shape="rectangle"
