@@ -7,6 +7,7 @@ import "../styles/EssayReviewer.css"
 import RecommendationCard from './RecommendationCard';
 import { Grammarly, GrammarlyEditorPlugin } from "@grammarly/editor-sdk-react";
 import { Editor } from '@tinymce/tinymce-react';
+import Chat from './Chat';
 
 // api paths
 const UPLOAD_ESSAY_URL = '/essay/upload';
@@ -30,6 +31,7 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("Using AI to review your essay...");
   const [activeTabKey, setActiveTabKey] = useState("grammar");
+  const [assistantOpen, setAssistantOpen] = useState(false);
   const [promptDictionary, updatePromptDictionary] = useState({
     grammar: [
       `Welcome to CollegeAId! A platform using artificial intelligence to democratize the college admissions process. We are excited to review your essay.`,
@@ -86,11 +88,16 @@ const handleTabClick = (key) => {
    // Helper function to check if the "Grammar" tab is active
    const isGrammarTabActive = () => activeTabKey === 'grammar';
 
+   const toggleAssistant = () => {
+    setAssistantOpen(!assistantOpen);
+  }
+
    // Helper function to render the RecommendationCard component
    const renderRecommendationCard = (paragraph, index, key) => (
      <RecommendationCard
        key={index}
        text={paragraph}
+       toggleAssistant={toggleAssistant}
        onCheckButtonClick={handleCheckCardButtonClick}
        onReReviewClick={() => handleReReviewButtonClick(key, index)}
        hideButtons={isGrammarTabActive()} // Conditionally hide the buttons when the "Grammar" tab is active
@@ -280,6 +287,7 @@ const items = [
   // returns the UI elements of the essay reviewer component along with their props client_F1N7MawpRKSKRomuVRwXMi
   return ( 
     <div className="essay-reviewer-container">
+      {assistantOpen && <Chat toggleAssistant={toggleAssistant} essay={essay} />}
       <Row justify="space-evenly" gutter={[24, 16]}>
         <Col span={12}>
           <Grammarly  clientId={"client_F1N7MawpRKSKRomuVRwXMi"}

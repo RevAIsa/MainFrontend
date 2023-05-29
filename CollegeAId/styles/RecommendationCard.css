@@ -32,10 +32,31 @@
     bottom: 10px; /* Adjusted value for moving the button down */
     z-index: 1;
   }
+
+  .hidden-buttons {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+  }
   
   .recommendation-card-re-review-button:hover {
     background-color: #000000  !important;
     color: #ffffff !important;
     border-color: #000000  !important;
   }
-  
+
+  .recommendation-card-assistant-button {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
+    position: absolute;
+    right: 160px;
+    bottom: 10px;
+    z-index: 1;
+  }
+
+  .recommendation-card-assistant-button:hover {
+    background-color: #000000  !important;
+    color: #ffffff !important;
+    border-color: #000000  !important;
+  }
