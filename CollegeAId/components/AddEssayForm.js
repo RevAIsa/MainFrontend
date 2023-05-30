@@ -25,12 +25,12 @@ const AddEssayForm = ({ onCloseForm }) => {
     <div className="essay-form">
       <div className="form-field">
         <label htmlFor="essay-title">Essay Title:</label>
-        <input
+        <textarea
           type="text"
           id="essay-title"
           value={essayTitle}
           onChange={(e) => setEssayTitle(e.target.value)}
-        />
+        ></textarea>
       </div>
       <div className="form-field">
         <label htmlFor="essay-prompt">Prompt:</label>

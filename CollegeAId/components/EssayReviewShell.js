@@ -13,8 +13,6 @@ import useStore from "../Store"
 const UPDATE_ESSAY_URL = "/essay/"
 
 const EssayReviewShell = () => {
-    const {token, setToken} = useToken();
-    console.log(token)
     const navigate = useNavigate();
     const signOut = useSignOut();
 
