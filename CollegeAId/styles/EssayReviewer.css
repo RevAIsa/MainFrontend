@@ -38,3 +38,26 @@
     z-index: 9999; /* Set a higher z-index value */
   }
   
+  .essay-textarea {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 16px;
+    padding: 10px;
+    flex: 1; /* Let the textarea expand to fill the remaining space */
+    padding: 10px; /* Adjust the padding as needed */
+    resize: none;
+  }
+
+  .text-area-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Set the container height to full viewport height */
+  }
+
+  grammarly-editor-plugin {
+    --grammarly-default-font-family: Optima, sans-serif;
+    --grammarly-interactive-color: #0d490d;
+    --grammarly-default-border-radius: 30px;
+    --grammarly-card-border-radius: 0px;
+  }

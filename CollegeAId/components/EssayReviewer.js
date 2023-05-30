@@ -64,25 +64,17 @@ const handleTabClick = (key) => {
   callbackTabClicked(key);
 };
 
-  // // function to handle the rereviewbuttonclick
-  // // TODO
-  // const getReview = (category, paragraphIndex) => {
-  //   // Make API call to get the updated response for the specific paragraph
-  //   // Update the paragraph at the specified index in the prompt dictionary
-  //   // Use the returned data or modify the paragraph as needed
-  //   // Update the state using the updated prompt dictionary
-  //   const updatedParagraph = "Updated paragraph";
-  
-  //   updatePromptDictionary((prevState) => {
-  //     const updatedCategory = [...prevState[category]];
-  //     updatedCategory[paragraphIndex] = updatedParagraph;
-  
-  //     return {
-  //       ...prevState,
-  //       [category]: updatedCategory,
-  //     };
-  //   });
-  // };
+// functions to refactor the tinymce rich text editor back into a <textare>
+const handleInit = (editor) => {
+  editorRef.current = editor;
+  setEssay(editor.getContent({ format: 'text' }));
+};
+
+const handleEditorChange = (event) => {
+  const newValue = event.target.value;
+  updateEssay(newValue);
+  updateEssayInParent(newValue);
+};
 
    // Helper function to check if the "Grammar" tab is active
    const isGrammarTabActive = () => activeTabKey === 'grammar';
@@ -296,33 +288,19 @@ const items = [
               documentDialect: "british"
               }}>
                 <GrammarlyEditorPlugin
-                className='grammarly-underline'
+                className='grammarly-editor-plugin'
                     clientId={"client_F1N7MawpRKSKRomuVRwXMi"}
                     config={{
                       documentDialect: "british"
                     }}
                   >
-            <Editor 
-            value={essay} // Pass the initial value of the essay
-            onInit={(evt, editor) => {
-              setText(editor.getContent({format: 'text'}));
-              editorRef.current = editor;
-            }}
-            onEditorChange={(newValue, editor) => {
-              updateEssay(newValue);
-              updateEssayInParent(newValue);
-              setText(editor.getContent({format: 'text'}));
-            }}
-            apiKey="gmfu99pcuvqk535ru20yz8y6ixa7gm28c68zvfp15qhr3uxg" // Replace with your TinyMCE API key
-            init={{
-              height: 700, // Set the desired height of the editor
-              menubar: false, // Optionally, hide the menubar
-              plugins: [
-                'wordcount',
-              ],
-              toolbar:
-              'undo redo | bold italic | alignleft aligncenter alignright | wordcount',
-            }} />
+            <textarea
+            value={essay}
+            onChange={handleEditorChange}
+            ref={editorRef}
+            style={{ height: '700px' }}
+            className="essay-textarea"
+               />
             </GrammarlyEditorPlugin>
           </Grammarly>
         </Col>
