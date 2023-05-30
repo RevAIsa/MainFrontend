@@ -9,7 +9,8 @@ const GET_CHAT_URL = '/chat/chat';
 
 const Chat = ({ essay, toggleAssistant }) => {
   // create state variables 
-  const [chats, setChats] = useState([{role: "Assistant", content:"Hi, I am your personal assistant! Please ask me any questions you have about my suggestions. Please only ask questions about the selected response and only ask one question at a time."}]);
+  const [chats, setChats] = useState([{role: "Assistant", content:"Hi! I am your ai-powered collge counselor! Please ask me any questions you have about my essay suggestions. Only ask questions about the selected response and only ask one question at a time. "},
+                                      {role: "Assistant", content:"Sample questions: \"Give me another example of how to implement your suggesiton in my essay.\" or \"I'm confused. Can you explain your suggestion a different way?\""}]);
   const [message, setMessage] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("Using AI to review your essay...");

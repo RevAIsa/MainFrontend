@@ -187,22 +187,22 @@ const EssayDashboard = () => {
         >
           {/* Add new essay button */}
           <div>
-            <button
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '100%',
-                height: '185px',
-                border: 'none',
-                borderRadius: '4px',
-                backgroundColor: '#0d490d',
-                color: '#fff',
-                padding: '16px',
-              }}
-              onClick={handleAddEssay}
-            >
+          <button
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%',
+              height: '100%', 
+              border: 'none',
+              borderRadius: '4px',
+              backgroundColor: '#0d490d',
+              color: '#fff',
+              padding: '16px',
+            }}
+            onClick={handleAddEssay}
+          >
               <img src={EssayIcon} alt="Add Essay Icon" style={{ width: '64px', height: '64px' }} />
               <div style={{ marginTop: '8px', textAlign: 'center', fontWeight: 'bold', fontSize: '16px' }}>
                 Add New Essay
