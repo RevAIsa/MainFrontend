@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Input, Spin } from 'antd';
-import {  Col, Row, Tabs, Button } from 'antd';
+import {  Col, Row, Tabs, Typography } from 'antd';
 const { TextArea } = Input;
 import axios from '../api/axios';
 import "../styles/EssayReviewer.css"
@@ -21,13 +21,12 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
   // state variables for a local version of the essay, the prompt array
   const textareaRef = useRef(null);
   const editorRef = useRef(null);
+  const { Title } = Typography;
 
   // values managed by the tiny mcerich text field
   const [essay, updateEssay] = useState("");
   const [text, setText] = useState("");
-
   const [essayPrompt, updateEssayPrompt] = useState("");
-  const [promptArray, updatePrompt] = useState(["Nothing to see yet!"].concat([""]).concat([""]).concat([""]).concat([""]).concat([""]).concat([""]));
   const [isLoading, setIsLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("Using AI to review your essay...");
   const [activeTabKey, setActiveTabKey] = useState("grammar");
@@ -53,7 +52,7 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
 
     fetchEssay()
 
-  }, [essayId]);
+  }, [essayId, essayPrompt]);
   // function to handle the button click
   const handleCheckCardButtonClick = () => {
 
@@ -65,25 +64,25 @@ const handleTabClick = (key) => {
   callbackTabClicked(key);
 };
 
-  // function to handle the rereviewbuttonclick
-  // TODO
-  const getReview = (category, paragraphIndex) => {
-    // Make API call to get the updated response for the specific paragraph
-    // Update the paragraph at the specified index in the prompt dictionary
-    // Use the returned data or modify the paragraph as needed
-    // Update the state using the updated prompt dictionary
-    const updatedParagraph = "Updated paragraph";
+  // // function to handle the rereviewbuttonclick
+  // // TODO
+  // const getReview = (category, paragraphIndex) => {
+  //   // Make API call to get the updated response for the specific paragraph
+  //   // Update the paragraph at the specified index in the prompt dictionary
+  //   // Use the returned data or modify the paragraph as needed
+  //   // Update the state using the updated prompt dictionary
+  //   const updatedParagraph = "Updated paragraph";
   
-    updatePromptDictionary((prevState) => {
-      const updatedCategory = [...prevState[category]];
-      updatedCategory[paragraphIndex] = updatedParagraph;
+  //   updatePromptDictionary((prevState) => {
+  //     const updatedCategory = [...prevState[category]];
+  //     updatedCategory[paragraphIndex] = updatedParagraph;
   
-      return {
-        ...prevState,
-        [category]: updatedCategory,
-      };
-    });
-  };
+  //     return {
+  //       ...prevState,
+  //       [category]: updatedCategory,
+  //     };
+  //   });
+  // };
 
    // Helper function to check if the "Grammar" tab is active
    const isGrammarTabActive = () => activeTabKey === 'grammar';
@@ -137,7 +136,7 @@ const items = [
       console.log(response.data);
       updateEssay(response.data.essayString);
       updateEssayInParent(response.data.essayString);
-      updateEssayPrompt(response.data.essayPrompt);
+      updateEssayPrompt(response.data.prompt);
 
     } catch (error) {
       console.log(error)
@@ -194,6 +193,7 @@ const items = [
   
         const response_get_prompt = await axios.post(GET_THEME_URL, {
           essay: essay,
+          essayPrompt: essayPrompt
         });
   
         const paragraphs = response_get_prompt.data.response.split("\n\n");
@@ -290,6 +290,7 @@ const items = [
       {assistantOpen && <Chat toggleAssistant={toggleAssistant} essay={essay} />}
       <Row justify="space-evenly" gutter={[24, 16]}>
         <Col span={12}>
+          <Title level={5}>Prompt: {essayPrompt}</Title>
           <Grammarly  clientId={"client_F1N7MawpRKSKRomuVRwXMi"}
             config={{
               documentDialect: "british"

@@ -47,12 +47,14 @@ const EssayDashboard = () => {
   // delete the essay and then reload the essay list
   const handleDeleteClick = async (essayId) => {
     console.log("Entered handle delete clicked")
+    console.log(essayId)
+    console.log(userId)
 
     try {
         const response = await axios.delete(DELETE_ESSAY_URL, {
           data: {
             essayId: essayId,
-            userId: "6466784bb64c104c502d677c",
+            userId: userId,
           },
         });
 
@@ -172,7 +174,7 @@ const EssayDashboard = () => {
     <Layout style={{ width: '100%' }}>
       <div className="essay-form" style={{ position: 'relative', padding: '0px' }}>
         <NavBar onLogOut={onLogOut} />
-
+        
         <div
           style={{
             paddingTop: '20px',
