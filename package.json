@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "build": "expo build:web"
+
   },
   "dependencies": {
     "@ant-design/icons": "^5.1.0",
