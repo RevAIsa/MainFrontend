@@ -11,7 +11,6 @@ import { useNavigate } from 'react-router-dom';
 import { Breadcrumb, Layout, Menu, theme, Col, Row, Tabs } from 'antd';
 import useToken from '../contexts/useToken';
 import { LogoutOutlined } from '@ant-design/icons';
-import { EssayReviewer } from './essayReviewer';
 import { NavBar } from './NavBar';
 import '../styles/Essays.css';
 import { Table, Modal } from "antd";
