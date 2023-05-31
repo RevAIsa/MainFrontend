@@ -16,7 +16,7 @@
     "@tinymce/tinymce-react": "^4.3.0",
     "antd": "^5.5.0",
     "axios": "^1.4.0",
-    "expo": "^48.0.17",
+    "expo": "^48.0.18",
     "expo-status-bar": "~1.4.4",
     "react": "18.2.0",
     "react-auth-kit": "^2.12.2",
