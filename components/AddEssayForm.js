@@ -30,6 +30,7 @@ const AddEssayForm = ({ onCloseForm }) => {
           id="essay-title"
           value={essayTitle}
           onChange={(e) => setEssayTitle(e.target.value)}
+          placeholder='Give your essay a title.'
         ></textarea>
       </div>
       <div className="form-field">
@@ -39,6 +40,7 @@ const AddEssayForm = ({ onCloseForm }) => {
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           className="taller-prompt"
+          placeholder='Paste the essay prompt here.'
         ></textarea>
       </div>
       <div className="form-field">
