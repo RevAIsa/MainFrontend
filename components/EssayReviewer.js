@@ -295,12 +295,12 @@ const items = [
                     }}
                   >
             <textarea
-            value={essay}
-            onChange={handleEditorChange}
-            ref={editorRef}
-            style={{ height: '700px' }}
-            className="essay-textarea"
-               />
+              value={essay}
+              onChange={handleEditorChange}
+              ref={editorRef}
+              style={{ height: '700px' }}
+              className="essay-textarea"
+            />
             </GrammarlyEditorPlugin>
           </Grammarly>
         </Col>

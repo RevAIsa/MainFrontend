@@ -8,6 +8,7 @@ const { Content, Footer } = Layout;
 import axios from '../api/axios';
 import { useSignOut } from 'react-auth-kit';
 import useStore from "../Store"
+import '../styles/EssayReviewShell.css';
 
 // api paths
 const UPDATE_ESSAY_URL = "/essay/"
@@ -58,43 +59,29 @@ const EssayReviewShell = () => {
 
       // render the shell of the essay review page with th essay reviewer component inside it 
       return <Layout  style={{width: '100%',}}>
-          <NavBar onBack = {onBack} onLogOut = {onLogOut}/>
-
-            <Content
-
-              style={{
-                padding: '0 50px',
-              }}
-            >
-
-              <div
-                className="site-layout-content"
-                style={{
-              
-                }}
-              >
-              
-              <EssayReviewer essayId={essayId} updateEssayInParent={updateEssayInParent}/>
-
+        <NavBar onBack = {onBack} onLogOut = {onLogOut}/>
+          <Content
+            style={{
+              padding: '0 50px',
+            }}
+          >
+            <div className="site-layout-content">
+              <div className="essay-reviewer">
+               <EssayReviewer essayId={essayId} updateEssayInParent={updateEssayInParent} />
+              </div>
               <Button
                 type="primary"
                 style={{ backgroundColor: '#0d490d', borderColor: '#0d490d', marginTop: '20px' }}
                 onClick={handleSavePress}
-                >
+              >
                 Save Essay
               </Button>
-
-              </div>
-              
-            </Content>
-            <Footer
-              style={{
-                textAlign: 'center',
-              }}
-            >
-              CollegeAId ©2023 Democratizing college admissions.
-            </Footer>
-          </Layout>
+            </div>
+          </Content>
+          <Footer style={{textAlign: 'center',}}>
+            CollegeAId ©2023 Democratizing college admissions.
+          </Footer>
+        </Layout>
 }
 
 export default EssayReviewShell;
