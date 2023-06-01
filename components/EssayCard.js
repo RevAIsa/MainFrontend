@@ -33,7 +33,7 @@ const EssayCard = ({ id, title, lastUpdated, onEdit, onDelete, onEditClick, onDe
         <p>Last Updated: {lastUpdated}</p>
         <Space>
           <Button icon={<EditOutlined />} onClick={onEditClick}>
-            Edit
+            Review and Edit
           </Button>
           <Button icon={<DeleteOutlined />} onClick={onDeleteClick} danger>
             Delete
