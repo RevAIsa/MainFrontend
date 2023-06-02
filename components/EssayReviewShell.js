@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Layout, Button } from 'antd';
-import useToken from '../contexts/useToken';
+import { Layout } from 'antd';
 import EssayReviewer from "./EssayReviewer";
 import { NavBar } from './NavBar';
 const { Content, Footer } = Layout;
@@ -59,7 +58,7 @@ const EssayReviewShell = () => {
 
       // render the shell of the essay review page with th essay reviewer component inside it 
       return <Layout  style={{width: '100%',}}>
-        <NavBar onBack = {onBack} onLogOut = {onLogOut}/>
+        <NavBar onBack = {onBack} onLogOut = {onLogOut} onSave = {handleSavePress} showSaveButton = { true }/>
           <Content
             style={{
               padding: '0 50px',
@@ -69,13 +68,6 @@ const EssayReviewShell = () => {
               <div className="essay-reviewer">
                <EssayReviewer essayId={essayId} updateEssayInParent={updateEssayInParent} />
               </div>
-              <Button
-                type="primary"
-                style={{ backgroundColor: '#0d490d', borderColor: '#0d490d', marginTop: '20px' }}
-                onClick={handleSavePress}
-              >
-                Save Essay
-              </Button>
             </div>
           </Content>
           <Footer style={{textAlign: 'center',}}>

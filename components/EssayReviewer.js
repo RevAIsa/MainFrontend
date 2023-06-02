@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Input, Spin } from 'antd';
-import {  Col, Row, Tabs, Typography } from 'antd';
-const { TextArea } = Input;
+import {  Col, Row, Tabs, Typography, Modal } from 'antd';
 import axios from '../api/axios';
 import "../styles/EssayReviewer.css"
 import RecommendationCard from './RecommendationCard';
 import { Grammarly, GrammarlyEditorPlugin } from "@grammarly/editor-sdk-react";
-import { Editor } from '@tinymce/tinymce-react';
 import Chat from './Chat';
+import useStore from "../Store"
 
 // api paths
-const UPLOAD_ESSAY_URL = '/essay/upload';
+const UPDATE_ESSAY_URL = "/essay/"
 const GET_ESSAY_BY_ID_URL = '/essay/getOneString/:essayId';
 const GET_PROMPT_URL = '/suggestion/';
 const REREVIEW_ESSAY_URL = 'suggestion/rereview'
@@ -23,10 +22,14 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
   const editorRef = useRef(null);
   const { Title } = Typography;
 
+  // zustand states
+  const userId = useStore(state => state.userId);
+
   // values managed by the tiny mcerich text field
   const [essay, updateEssay] = useState("");
-  const [text, setText] = useState("");
+  const [lastSavedEssay, setLastSavedEssay] = useState("");
   const [essayPrompt, updateEssayPrompt] = useState("");
+  const [showReReviewAlert, setShowReReviewAlert] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("Using AI to review your essay...");
   const [activeTabKey, setActiveTabKey] = useState("grammar");
@@ -60,15 +63,35 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
 
   // Helper function to handle tab click
 const handleTabClick = (key) => {
+  saveEssay();
   setActiveTabKey(key);
   callbackTabClicked(key);
 };
 
-// functions to refactor the tinymce rich text editor back into a <textare>
-const handleInit = (editor) => {
-  editorRef.current = editor;
-  setEssay(editor.getContent({ format: 'text' }));
+// handle the condition and show or hide the rereviewer alert
+const handleShowAlert = () => {
+  setShowReReviewAlert(true);
 };
+
+// save a the new essay in our system under the current userId and essayId
+const saveEssay = async () => {
+  try {
+
+    const response = await axios.patch(UPDATE_ESSAY_URL, {
+      essayId: essayId, 
+      userId: userId,
+      newEssayString: essay
+    });
+
+    console.log("Saved the essay and this was the response:")
+    console.log(response)
+
+    setLastSavedEssay(essay);
+
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 const handleEditorChange = (event) => {
   const newValue = event.target.value;
@@ -135,45 +158,45 @@ const items = [
     }
   };  
 
-  // updates db when save button is clicked
-  const onSave = async (values) => {
-    try {
-      const response_save = await axios.post(UPLOAD_URL,
-        {
-          userId: values.userId,
-          customFileName: values.fileName
-        },
-      );
-      console.log(JSON.stringify(response_register));
+  // // updates db when save button is clicked
+  // const onSave = async (values) => {
+  //   try {
+  //     const response_save = await axios.post(UPLOAD_URL,
+  //       {
+  //         userId: values.userId,
+  //         customFileName: values.fileName
+  //       },
+  //     );
+  //     console.log(JSON.stringify(response_register));
 
-    } catch (err) {
-      console.log(err);
-      if (!err?.response) {
-        setErrMsg('No Server Response');
-      } else {
-        setErrMsg('Login Failed');
-      }
-    }
-  };
+  //   } catch (err) {
+  //     console.log(err);
+  //     if (!err?.response) {
+  //       setErrMsg('No Server Response');
+  //     } else {
+  //       setErrMsg('Login Failed');
+  //     }
+  //   }
+  // };
 
-  // Helper function to update the height of the TextArea based on its content
-  const updateTextareaHeight = () => {
-    if (textareaRef.current) {
-      const textareaRows = textareaRef.current.rows;
-      textareaRef.current.rows = 1; // Reset the number of rows to 1 to calculate the scroll height correctly
-      const scrollHeight = textareaRef.current.scrollHeight;
-      const calculatedRows = Math.ceil(scrollHeight / 20); // Adjust the division value (20) based on your desired row height
-      textareaRef.current.rows = calculatedRows;
-    }
-  };
+  // // Helper function to update the height of the TextArea based on its content
+  // const updateTextareaHeight = () => {
+  //   if (textareaRef.current) {
+  //     const textareaRows = textareaRef.current.rows;
+  //     textareaRef.current.rows = 1; // Reset the number of rows to 1 to calculate the scroll height correctly
+  //     const scrollHeight = textareaRef.current.scrollHeight;
+  //     const calculatedRows = Math.ceil(scrollHeight / 20); // Adjust the division value (20) based on your desired row height
+  //     textareaRef.current.rows = calculatedRows;
+  //   }
+  // };
 
-  // updates local version of essay
-  // also updates the local version of the essay in the parent component
-  const onChange = (e) => {
-    updateEssay(e.target.value);
-    updateEssayInParent(e.target.value);
-    updateTextAreaHeight();
-  };
+  // // updates local version of essay
+  // // also updates the local version of the essay in the parent component
+  // const onChange = (e) => {
+  //   updateEssay(e.target.value);
+  //   updateEssayInParent(e.target.value);
+  //   updateTextAreaHeight();
+  // };
 
   //universal api call for all prompts
   const onPrompt = async (category, key) => {
@@ -205,49 +228,57 @@ const items = [
   };
 
   const handleReReviewButtonClick = async (category, paragraphIndex) => {
-
+    // check if the essay has been edited since the suggestion was rendered (tab was clicked)
+    // basically just need to check if the current essay is different from the last saved essay
+    // if not different, show an alert that says that there have been no changes since the suggestion was given
+    if (essay === lastSavedEssay) {
+      console.log("The essay hasn't been changed")
+      handleShowAlert();
+    } 
+    else {
+      
+      try {
+        // Retrieve the original paragraph from the promptDictionary
+      console.log('category:', category);
+      console.log('paragraphIndex:', paragraphIndex);
+      console.log(promptDictionary)
+      const aiSuggestion = promptDictionary[activeTabKey][paragraphIndex];
+      console.log(aiSuggestion);
     
-    try {
-      // Retrieve the original paragraph from the promptDictionary
-    console.log('category:', category);
-    console.log('paragraphIndex:', paragraphIndex);
-    console.log(promptDictionary)
-    const aiSuggestion = promptDictionary[activeTabKey][paragraphIndex];
-    console.log(aiSuggestion);
-  
-      // show the loading spinner and spinner text to "Rereviewing ai.."
-      setIsLoading(true);
-      setLoadingText("Our AI is re-reviewing your new edits...")
-  
-      // get the response from the api
-      const response = await axios.post(REREVIEW_ESSAY_URL, {
-        aiSuggestion: aiSuggestion, 
-        newEssay: essay
-      });
-  
-      const aiNewSuggestion = response.data.response;
-      console.log(aiNewSuggestion);
-  
-      // Make an API call to get the re-review for the specific paragraph using the original paragraph
-      // Update the paragraph at the specified index in the prompt dictionary with the re-reviewed paragraph
-      // Use the returned data or modify the paragraph as needed
-      const updatedParagraph = "Updated paragraph";
-  
-      // Update the state using the updated prompt dictionary
-      updatePromptDictionary((prevState) => {
-        const updatedCategory = [...prevState[activeTabKey]];
-        updatedCategory[paragraphIndex] = aiNewSuggestion;
-  
-        return {
-          ...prevState,
-          [activeTabKey]: updatedCategory,
-        };
-      });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoadingText("Using AI to review your essay...");
-      setIsLoading(false);
+        // show the loading spinner and spinner text to "Rereviewing ai.."
+        setIsLoading(true);
+        setLoadingText("Our AI is re-reviewing your new edits...")
+    
+        // get the response from the api
+        const response = await axios.post(REREVIEW_ESSAY_URL, {
+          aiSuggestion: aiSuggestion, 
+          newEssay: essay
+        });
+    
+        const aiNewSuggestion = response.data.response;
+        console.log(aiNewSuggestion);
+    
+        // Make an API call to get the re-review for the specific paragraph using the original paragraph
+        // Update the paragraph at the specified index in the prompt dictionary with the re-reviewed paragraph
+        // Use the returned data or modify the paragraph as needed
+        const updatedParagraph = "Updated paragraph";
+    
+        // Update the state using the updated prompt dictionary
+        updatePromptDictionary((prevState) => {
+          const updatedCategory = [...prevState[activeTabKey]];
+          updatedCategory[paragraphIndex] = aiNewSuggestion;
+    
+          return {
+            ...prevState,
+            [activeTabKey]: updatedCategory,
+          };
+        });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoadingText("Using AI to review your essay...");
+        setIsLoading(false);
+      }
     }
   };
   
@@ -325,6 +356,19 @@ const items = [
           )}
 
       </Row> 
+      {showReReviewAlert && (
+  <Modal
+    title="Oops!"
+    open={showReReviewAlert}
+    onCancel={() => setShowReReviewAlert(false)}
+    onOk={() => setShowReReviewAlert(false)}
+    centered
+    footer={null}
+  >
+    {/* Your alert content */}
+    <p>The "Re-Review" button tells our AI to review how well your new changes address it's suggestion, but you haven't made any changes yet! Address the suggestion first, then hit ReReview.</p>
+  </Modal>
+)}
   </div>);
 }
 
