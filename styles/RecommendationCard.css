@@ -7,7 +7,9 @@
   }
   
   .recommendation-card-button {
-    background-color: #32a852;
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
     position: absolute;
     right: 10px;
     bottom: 10px;
@@ -15,7 +17,7 @@
   }
 
   .recommendation-card-button:hover {
-    background-color: #0d490d !important;
+    background-color: #32a852 !important;
   }
   
   .recommendation-card-content {

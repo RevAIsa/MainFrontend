@@ -33,6 +33,11 @@ export function NavBar(props) {
           <Text>Log Out </Text>
           <LogoutOutlined />
         </Button>
+        {props.showSaveButton && (
+          <Button onClick={props.onSave} htmlType="save" style={{ backgroundColor: '#0d490d', borderColor: '#0d490d', color: 'white'}}>
+            <Text style={{ color: 'white' }}> Save Essay </Text>
+          </Button>
+        )}
       </div>
     </Header>
   );
