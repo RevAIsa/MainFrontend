@@ -87,6 +87,7 @@ const Chat = ({ essay, toggleAssistant }) => {
             <input
                 type="text"
                 name="message"
+                className="chat-input"
                 value={message}
                 placeholder="Type a message here and hit enter..."
                 onChange={(e) => setMessage(e.target.value)}
