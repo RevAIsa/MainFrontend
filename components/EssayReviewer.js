@@ -189,10 +189,11 @@ const items = [
         });
   
         const paragraphs = response_get_prompt.data.response.split("\n\n");
-  
+        const fullParagraphs = paragraphs.filter(paragraph => paragraph.split(" ").length >= 10);
+
         updatePromptDictionary((prevState) => ({
           ...prevState,
-          [category]: paragraphs,
+          [category]: fullParagraphs,
         }));
       } catch (err) {
         console.log(err);

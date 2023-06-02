@@ -43,7 +43,7 @@ h1 {
     overflow: auto;
 }
 
-input{
+.chat-input {
     position: absolute;
     width: 90%;
     height: 40px;
