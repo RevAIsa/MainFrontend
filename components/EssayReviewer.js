@@ -340,22 +340,6 @@ const EssayReviewer = ({ essayId, updateEssayInParent, setNumberIssuesAddressed,
     }
   };
 
-
-  // helper function that calls onPrompt when a tab is clicked
-  // will be helpful when we add more logic limiting number of prompt api calls
-  const callbackTabClicked = (key) => {
-    console.log(key);
-
-    const selectedItem = items.find((item) => item.key === key); // Find the item with matching key
-    if (selectedItem) {
-      const category = selectedItem.key;
-      const index = items.indexOf(selectedItem); // Get the index of the selected item
-      onPrompt(category, index);
-    }
-  };
-
-
-
   // action performed when the save button is pressed
   // should update the essay in the database with the contents of essay
   const handleButtonPress = () => {
