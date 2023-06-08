@@ -5,19 +5,40 @@
     padding-bottom: 25px;
     position: relative;
   }
+
+  .recommendation-card.drop-shadow {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
   
-  .recommendation-card-button {
+  .recommendation-card-button-container {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    gap: 10px; /* Add space between buttons */
+    align-items: center;
+  }
+  
+  .recommendation-card-thumbs-up {
     background-color: #ffffff;
-    color: #000000;
-    border: 1px solid #000000;
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-    z-index: 1;
+    color: #52A752;
+    border: 1px solid #52A752;
   }
 
-  .recommendation-card-button:hover {
-    background-color: #32a852 !important;
+  .recommendation-card-thumbs-up:hover {
+    background-color: #52A752 !important;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+  }
+  
+  .recommendation-card-thumbs-down {
+    background-color: #ffffff;
+    color: #E296FF;
+    border: 1px solid #E296FF;
+  }
+
+  .recommendation-card-thumbs-down:hover {
+    background-color: #E296FF !important;
+    color: #ffffff;
+    border: 1px solid #ffffff;
   }
   
   .recommendation-card-content {
@@ -30,8 +51,8 @@
     color: #000000;
     border: 1px solid #000000;
     position: absolute;
-    right: 50px;
-    bottom: 10px; /* Adjusted value for moving the button down */
+    right: 105px;
+    bottom: 23px; /* Adjusted value for moving the button down */
     z-index: 1;
   }
 
@@ -52,8 +73,8 @@
     color: #000000;
     border: 1px solid #000000;
     position: absolute;
-    right: 160px;
-    bottom: 10px;
+    right: 218px;
+    bottom: 23px;
     z-index: 1;
   }
 
