@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { Button } from 'antd';
 import { Layout } from 'antd';
-import { LogoutOutlined, RollbackOutlined } from '@ant-design/icons';
+import { LogoutOutlined, RollbackOutlined, SaveFilled } from '@ant-design/icons';
 
 // import assets
 import Logo from "../assets/collegeaid_logo.png"
@@ -34,7 +34,8 @@ export function NavBar(props) {
           <LogoutOutlined />
         </Button>
         {props.showSaveButton && (
-          <Button onClick={props.onSave} htmlType="save" style={{ backgroundColor: '#0d490d', borderColor: '#0d490d', color: 'white'}}>
+          <Button onClick={props.onSave} htmlType="save" style={{ backgroundColor: '#0d490d', borderColor: '#0d490d', color: 'white' }}>
+            <SaveFilled />
             <Text style={{ color: 'white' }}> Save Essay </Text>
           </Button>
         )}

@@ -9,6 +9,7 @@ const green = "#e0f7e0";
 const purple = "#efd8ff";
 const white = "#ffffff";
 
+
 const RecommendationCard = ({ text, toggleAssistant, onReReviewClick, hideButtons, onCompletionStatusChange }) => {
   const [cardColor, setCardColor] = useState(white);
   const [hasDropShadow, setDropShadow] = useState(true);
@@ -77,9 +78,10 @@ const RecommendationCard = ({ text, toggleAssistant, onReReviewClick, hideButton
           className="recommendation-card-thumbs-down"
           onClick={handleThumbsDownClick}
         />
+
       {!hideButtons && (
         <>
-          <Button 
+          <Button
             type="primary"
             shape="rectangle"
             className="recommendation-card-assistant-button"

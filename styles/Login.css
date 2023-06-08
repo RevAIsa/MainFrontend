@@ -1,6 +1,6 @@
     .login-button {
     background-color: #0d490d;
-    margin-left: 30px; /* Add margin-right to create space between buttons */
+   margin-left: 0px; /* Add margin-right to create space between buttons */
   }
   
   .login-button:hover {
@@ -8,7 +8,7 @@
   }
 
   .register-button {
-    margin-right: 30px; /* Add margin-left to create space between buttons */
+    margin-right: 0px; /* Add margin-left to create space between buttons */
   }
 
   .logo-image {
@@ -27,7 +27,7 @@
 
   .register-button,
   .login-button {
-    margin-top: 40px; /* Increase spacing between buttons and form */
+    margin-top: 0px; /* Increase spacing between buttons and form */
   }
 
   /* Set different logo sizes for different screen widths */

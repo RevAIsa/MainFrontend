@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Spin } from 'antd';
-import {  Col, Row, Tabs, Typography, Modal } from 'antd';
+import { Input, Spin } from 'antd';
+import { Col, Row, Tabs, Typography, Modal } from 'antd';
 import axios from '../api/axios';
 import "../styles/EssayReviewer.css"
 import RecommendationCard from './RecommendationCard';
@@ -43,7 +43,7 @@ const EssayReviewer = ({ essayId, updateEssayInParent, setNumberIssuesAddressed,
       `As you move through the different tickets, make them as accepted or rejected using the thumb buttons. You need to make the changes yourself!.`,
         `It's time to get started! First and foremost, lets check your spelling and grammar. Click anywhere in the text box containing your essay to initialize
         a powerful, ai-powered grammar and spelling tool. Clicking "Save" will update your essay in our system.`
-            ],
+    ],
     hook: [],
     themes: [],
     voice: [],
@@ -69,8 +69,6 @@ const EssayReviewer = ({ essayId, updateEssayInParent, setNumberIssuesAddressed,
     structure: ["unaddressed", "unaddressed", "unaddressed", "unaddressed"],
     relevance: ["unaddressed", "unaddressed"],
   });
-
-  
 
   // use effect that is called each time the value of essayId changes
   useEffect(() => {
@@ -112,6 +110,7 @@ const EssayReviewer = ({ essayId, updateEssayInParent, setNumberIssuesAddressed,
   // helper functions
   // Helper function to handle tab click
   const handleTabClick = (key) => {
+
     setActiveTabKey(key);
   
     updateTabAPICallHistory((prevState) => ({
@@ -120,6 +119,7 @@ const EssayReviewer = ({ essayId, updateEssayInParent, setNumberIssuesAddressed,
     }));
   
     saveEssay();
+
     callbackTabClicked(key);
   };
 
@@ -127,7 +127,7 @@ const EssayReviewer = ({ essayId, updateEssayInParent, setNumberIssuesAddressed,
   const handleShowAlert = () => {
     setShowReReviewAlert(true);
   };
-
+  
   // Helper function to check if the "Grammar" tab is active
   const isGrammarTabActive = () => activeTabKey === 'grammar';
 
@@ -240,7 +240,7 @@ const EssayReviewer = ({ essayId, updateEssayInParent, setNumberIssuesAddressed,
   }   
 
   // fetches the essay from the api based on the essayId
-  const fetchEssay = async() => {
+  const fetchEssay = async () => {
     try {
 
       const getSpecificEssayURL = GET_ESSAY_BY_ID_URL.replace(':essayId', essayId);
@@ -254,21 +254,21 @@ const EssayReviewer = ({ essayId, updateEssayInParent, setNumberIssuesAddressed,
     } catch (error) {
       console.log(error)
     }
-  };  
+  };
 
   //universal api call for all prompts
   const onPrompt = async (category, key) => {
     if (essay.split(" ").length > 10 && essay.split(" ").length < 5000) {
       try {
         setIsLoading(true);
-  
+
         const GET_THEME_URL = GET_PROMPT_URL + category;
-        console.log(essayPrompt);
+
         const response_get_prompt = await axios.post(GET_THEME_URL, {
           essay: essay,
           prompt: essayPrompt
         });
-  
+
         const paragraphs = response_get_prompt.data.response.split("\n\n");
         const fullParagraphs = paragraphs.filter(paragraph => paragraph.split(" ").length >= 10);
 
@@ -292,40 +292,40 @@ const EssayReviewer = ({ essayId, updateEssayInParent, setNumberIssuesAddressed,
     if (essay === lastSavedEssay) {
       console.log("The essay hasn't been changed")
       handleShowAlert();
-    } 
+    }
     else {
-      
+
       try {
         // Retrieve the original paragraph from the promptDictionary
-      console.log('category:', category);
-      console.log('paragraphIndex:', paragraphIndex);
-      console.log(promptDictionary)
-      const aiSuggestion = promptDictionary[activeTabKey][paragraphIndex];
-      console.log(aiSuggestion);
-    
+        console.log('category:', category);
+        console.log('paragraphIndex:', paragraphIndex);
+        console.log(promptDictionary)
+        const aiSuggestion = promptDictionary[activeTabKey][paragraphIndex];
+        console.log(aiSuggestion);
+
         // show the loading spinner and spinner text to "Rereviewing ai.."
         setIsLoading(true);
         setLoadingText("Our AI is re-reviewing your new edits...")
-    
+
         // get the response from the api
         const response = await axios.post(REREVIEW_ESSAY_URL, {
-          aiSuggestion: aiSuggestion, 
+          aiSuggestion: aiSuggestion,
           newEssay: essay
         });
-    
+
         const aiNewSuggestion = response.data.response;
         console.log(aiNewSuggestion);
-    
+
         // Make an API call to get the re-review for the specific paragraph using the original paragraph
         // Update the paragraph at the specified index in the prompt dictionary with the re-reviewed paragraph
         // Use the returned data or modify the paragraph as needed
         const updatedParagraph = "Updated paragraph";
-    
+
         // Update the state using the updated prompt dictionary
         updatePromptDictionary((prevState) => {
           const updatedCategory = [...prevState[activeTabKey]];
           updatedCategory[paragraphIndex] = aiNewSuggestion;
-    
+
           return {
             ...prevState,
             [activeTabKey]: updatedCategory,
@@ -339,56 +339,82 @@ const EssayReviewer = ({ essayId, updateEssayInParent, setNumberIssuesAddressed,
       }
     }
   };
-  
+
+
+  // helper function that calls onPrompt when a tab is clicked
+  // will be helpful when we add more logic limiting number of prompt api calls
+  const callbackTabClicked = (key) => {
+    console.log(key);
+
+    const selectedItem = items.find((item) => item.key === key); // Find the item with matching key
+    if (selectedItem) {
+      const category = selectedItem.key;
+      const index = items.indexOf(selectedItem); // Get the index of the selected item
+      onPrompt(category, index);
+    }
+  };
+
+
+
+  // action performed when the save button is pressed
+  // should update the essay in the database with the contents of essay
+  const handleButtonPress = () => {
+    // Perform an action with the contents of the TextArea
+    console.log(essay);
+    // Add your custom logic here
+  };
+
+
   // returns the UI elements of the essay reviewer component along with their props client_F1N7MawpRKSKRomuVRwXMi
-  return ( 
+  return (
     <div className="essay-reviewer-container">
       {assistantOpen && <Chat toggleAssistant={toggleAssistant} essay={essay} />}
       <Row justify="space-evenly" gutter={[24, 16]}>
         <Col span={12}>
           <Title level={5}>Prompt: {essayPrompt}</Title>
-          <Grammarly  clientId={"client_F1N7MawpRKSKRomuVRwXMi"}
+          <Grammarly clientId={"client_F1N7MawpRKSKRomuVRwXMi"}
             config={{
               documentDialect: "british"
-              }}>
-                <GrammarlyEditorPlugin
-                className='grammarly-editor-plugin'
-                    clientId={"client_F1N7MawpRKSKRomuVRwXMi"}
-                    config={{
-                      documentDialect: "british"
-                    }}
-                  >
-            <textarea
-              value={essay}
-              onChange={handleEditorChange}
-              ref={editorRef}
-              style={{ height: '700px' }}
-              className="essay-textarea"
-            />
+            }}>
+            <GrammarlyEditorPlugin
+              className='grammarly-editor-plugin'
+              clientId={"client_F1N7MawpRKSKRomuVRwXMi"}
+              config={{
+                documentDialect: "british"
+              }}
+            >
+              <textarea
+                value={essay}
+                onChange={handleEditorChange}
+                ref={editorRef}
+                style={{ height: '100%' }}
+                className="essay-textarea"
+              />
             </GrammarlyEditorPlugin>
           </Grammarly>
         </Col>
 
         <Col span={12}>
-        <Tabs
+          <Tabs
             defaultActiveKey={activeTabKey}
             type="card"
             size="small"
             onTabClick={handleTabClick}
-    >   
-        {items}
-      </Tabs>
-    </Col>
+          >
+            {items}
+          </Tabs>
+        </Col>
 
-          {isLoading && (
-            <div className='spinner-container'>
-              <Spin size="large" />
-              <div>{loadingText}</div>
-            </div>
-          )}
+        {isLoading && (
+          <div className='spinner-container'>
+            <Spin size="large" />
+            <div>{loadingText}</div>
+          </div>
+        )}
 
-      </Row> 
+      </Row>
       {showReReviewAlert && (
+
   <Modal
     title="Oops!"
     open={showReReviewAlert}
@@ -401,6 +427,7 @@ const EssayReviewer = ({ essayId, updateEssayInParent, setNumberIssuesAddressed,
   </Modal>
 )}
   </div>);
+
 }
 
 export default EssayReviewer;

@@ -63,9 +63,9 @@
   }
   
   .recommendation-card-re-review-button:hover {
-    background-color: #000000  !important;
+    background-color: green  !important;
     color: #ffffff !important;
-    border-color: #000000  !important;
+    /*border-color: #000000  !important;*/
   }
 
   .recommendation-card-assistant-button {
@@ -79,7 +79,7 @@
   }
 
   .recommendation-card-assistant-button:hover {
-    background-color: #000000  !important;
+    background-color: green  !important;
     color: #ffffff !important;
-    border-color: #000000  !important;
+   /* border-color: #000000  !important;*/
   }

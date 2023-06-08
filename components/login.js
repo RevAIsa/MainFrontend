@@ -47,7 +47,7 @@ const LogIn = () => {
 
       // get the login response from the server
       const response = await axios.post(LOGIN_URL, {
-        email: values.email, 
+        email: values.email,
         password: values.password
       });
       console.log(response.data);
@@ -103,13 +103,13 @@ const LogIn = () => {
       >
         {errorMessage && (
           <Alert
-          message={errorMessage}
-          type="error"
-          showIcon
-          closable
-         onClose={() => setErrorMessage('')}
-           />
-       )}
+            message={errorMessage}
+            type="error"
+            showIcon
+            closable
+            onClose={() => setErrorMessage('')}
+          />
+        )}
         <Form.Item
           label="Email"
           name="email"
@@ -126,12 +126,12 @@ const LogIn = () => {
           <Input.Password />
         </Form.Item>
 
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-        <Button onClick={onRegister} htmlType="register" className='registerButton'>
-            Register
-          </Button>
-          <Button type="primary" htmlType="submit" className="login-button">
+        <Form.Item wrapperCol={{}}>
+          <Button type="primary" htmlType="submit" className="login-button" block>
             Login
+          </Button>
+          <Button type="link" onClick={onRegister} htmlType="register" className='registerButton' block>
+            Don’t have an account? Register!
           </Button>
         </Form.Item>
       </Form>
