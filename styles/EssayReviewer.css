@@ -54,6 +54,11 @@
     flex-direction: column;
   }
 
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #363636 !important;
+  font-weight: 500;
+}
+
   grammarly-editor-plugin {
     --grammarly-default-font-family: Optima, sans-serif;
     --grammarly-interactive-color: #0d490d;

@@ -24,7 +24,7 @@ h1 {
 
 .close-button {
     position: relative;
-    right: 10px;
+    align-items: center;
     background-color: red;
 }
 

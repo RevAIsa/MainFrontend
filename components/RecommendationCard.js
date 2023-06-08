@@ -9,11 +9,11 @@ const RecommendationCard = ({ text, onCheckButtonClick, toggleAssistant, onReRev
 
   const handleCheckClick = () => {
     if (cardColor === "white") {
-    setCardColor("#e0f7e0"); // Turn card green
-  } else {
-    setCardColor("white"); // Turn card white
-  }
-  onCheckButtonClick();
+      setCardColor("#e0f7e0"); // Turn card green
+    } else {
+      setCardColor("white"); // Turn card white
+    }
+    onCheckButtonClick();
   };
 
 
@@ -35,15 +35,15 @@ const RecommendationCard = ({ text, onCheckButtonClick, toggleAssistant, onReRev
         {text}
       </div>
       <Button
-            type="primary"
-            shape="circle"
-            icon={<CheckOutlined />}
-            className="recommendation-card-button"
-            onClick={handleCheckClick}
-          />
+        type="primary"
+        shape="circle"
+        icon={<CheckOutlined />}
+        className="recommendation-card-button"
+        onClick={handleCheckClick}
+      />
       {!hideButtons && (
         <>
-          <Button 
+          <Button
             type="primary"
             shape="rectangle"
             className="recommendation-card-assistant-button"
