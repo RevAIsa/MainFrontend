@@ -1,27 +1,56 @@
 import React, { useState } from 'react';
 import { Button } from 'antd';
-import { CheckOutlined } from '@ant-design/icons';
+import {  DislikeOutlined, LikeOutlined } from '@ant-design/icons';
 import '../styles/RecommendationCard.css';
 import useStore from "../Store";
 
-const RecommendationCard = ({ text, onCheckButtonClick, toggleAssistant, onReReviewClick, hideButtons }) => {
-  const [cardColor, setCardColor] = useState("white");
+// color constants
+const green = "#e0f7e0";
+const purple = "#efd8ff";
+const white = "#ffffff";
 
-  const handleCheckClick = () => {
-    if (cardColor === "white") {
-      setCardColor("#e0f7e0"); // Turn card green
-    } else {
-      setCardColor("white"); // Turn card white
+
+const RecommendationCard = ({ text, toggleAssistant, onReReviewClick, hideButtons, onCompletionStatusChange }) => {
+  const [cardColor, setCardColor] = useState(white);
+  const [hasDropShadow, setDropShadow] = useState(true);
+  const [cardCompleted, setCardCompleted] = useState(false);
+
+  const handleThumbsUpClick = () => {
+    if (cardColor === white || cardColor === purple) {
+    setCardColor(green); // Turn card green
+    setDropShadow(false);
+    if (onCompletionStatusChange) {
+      onCompletionStatusChange("accepted"); // Set the completion status to true
     }
-    onCheckButtonClick();
+  } else {
+    setCardColor(white); // Turn card white
+    setDropShadow(true);
+    if (onCompletionStatusChange) {
+      onCompletionStatusChange("unaddressed"); // Set the completion status to true
+    }
+  }
   };
 
+  const handleThumbsDownClick = () => {
+    if (cardColor === white || cardColor === green) {
+    setCardColor(purple); // Turn card green
+    setDropShadow(false);
+    if (onCompletionStatusChange) {
+      onCompletionStatusChange("rejected"); // Set the completion status to true
+    }
+  } else {
+    setCardColor(white); // Turn card white
+    setDropShadow(true);
+    if (onCompletionStatusChange) {
+      onCompletionStatusChange("unaddressed"); // Set the completion status to true
+    }
+  }
+  };
 
   const setSelectedSuggestion = useStore(state => state.setSelectedSuggestion);
 
   const handleReReviewClick = () => {
     onReReviewClick();
-    setCardColor("#f8e6ff") // turn card a light lavender
   };
 
   const handleDiscussClick = () => {
@@ -30,17 +59,26 @@ const RecommendationCard = ({ text, onCheckButtonClick, toggleAssistant, onReRev
   }
 
   return (
-    <div className="recommendation-card" style={{ backgroundColor: cardColor }}>
+    <div className={`recommendation-card ${hasDropShadow ? 'drop-shadow' : ''}`} style={{ backgroundColor: cardColor }}>
       <div className="recommendation-card-content">
         {text}
       </div>
+      <div className='recommendation-card-button-container'>
       <Button
-        type="primary"
-        shape="circle"
-        icon={<CheckOutlined />}
-        className="recommendation-card-button"
-        onClick={handleCheckClick}
-      />
+            type="primary"
+            shape="circle"
+            icon={<LikeOutlined />}
+            className="recommendation-card-thumbs-up"
+            onClick={handleThumbsUpClick}
+          />
+        <Button
+          type="primary"
+          shape="circle"
+          icon={<DislikeOutlined />}
+          className="recommendation-card-thumbs-down"
+          onClick={handleThumbsDownClick}
+        />
+
       {!hideButtons && (
         <>
           <Button
@@ -60,7 +98,7 @@ const RecommendationCard = ({ text, onCheckButtonClick, toggleAssistant, onReRev
             Re-Review
           </Button>
         </>
-      )}    </div>
+      )}    </div></div>
   );
 };
 

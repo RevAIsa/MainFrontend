@@ -7,25 +7,27 @@ import RecommendationCard from './RecommendationCard';
 import { Grammarly, GrammarlyEditorPlugin } from "@grammarly/editor-sdk-react";
 import Chat from './Chat';
 import useStore from "../Store"
+import { KeyOutlined } from '@ant-design/icons';
 
 // api paths
 const UPDATE_ESSAY_URL = "/essay/"
 const GET_ESSAY_BY_ID_URL = '/essay/getOneString/:essayId';
 const GET_PROMPT_URL = '/suggestion/';
 const REREVIEW_ESSAY_URL = 'suggestion/rereview'
+
+// globals
 const { TabPane } = Tabs;
 
-const EssayReviewer = ({ essayId, updateEssayInParent }) => {
+const EssayReviewer = ({ essayId, updateEssayInParent, setNumberIssuesAddressed, updateIssuesAddressedDictionary }) => {
 
-  // state variables for a local version of the essay, the prompt array
-  const textareaRef = useRef(null);
+  // definitions
   const editorRef = useRef(null);
   const { Title } = Typography;
 
-  // zustand states
+  // zustand states for local storage management
   const userId = useStore(state => state.userId);
 
-  // values managed by the tiny mcerich text field
+  // state variables and setters
   const [essay, updateEssay] = useState("");
   const [lastSavedEssay, setLastSavedEssay] = useState("");
   const [essayPrompt, updateEssayPrompt] = useState("");
@@ -34,11 +36,12 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
   const [loadingText, setLoadingText] = useState("Using AI to review your essay...");
   const [activeTabKey, setActiveTabKey] = useState("grammar");
   const [assistantOpen, setAssistantOpen] = useState(false);
+  const [childNumberIssuesAddressed, setChildNumberIssuesAdressed] = useState(0);
   const [promptDictionary, updatePromptDictionary] = useState({
     grammar: [
       `Welcome to CollegeAId! A platform using artificial intelligence to democratize the college admissions process. We are excited to review your essay.`,
-      `As you move through the different tickets, check them off by hitting the green check button in the bottom right corner.`,
-      `It's time to get started! First and foremost, lets check your spelling and grammar. Click anywhere in the text box containing your essay to initialize
+      `As you move through the different tickets, make them as accepted or rejected using the thumb buttons. You need to make the changes yourself!.`,
+        `It's time to get started! First and foremost, lets check your spelling and grammar. Click anywhere in the text box containing your essay to initialize
         a powerful, ai-powered grammar and spelling tool. Clicking "Save" will update your essay in our system.`
     ],
     hook: [],
@@ -48,7 +51,24 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
     structure: [],
     relevance: [],
   });
-
+  const [tabAPICallHistory, updateTabAPICallHistory] = useState({
+    grammar: false, 
+    hook: false, 
+    themes: false, 
+    voice: false, 
+    language: false, 
+    structure: false, 
+    relevance: false
+  });
+  const [cardCompletionDictionary, updateCardCompletionDictionary] = useState({
+    grammar: ["unaddressed", "unaddressed", "unaddressed"],
+    hook: ["unaddressed", "unaddressed", "unaddressed"],
+    themes: ["unaddressed", "unaddressed", "unaddressed", "unaddressed"],
+    voice: ["unaddressed", "unaddressed", "unaddressed", "unaddressed"],
+    language: ["unaddressed", "unaddressed", "unaddressed", "unaddressed"],
+    structure: ["unaddressed", "unaddressed", "unaddressed", "unaddressed"],
+    relevance: ["unaddressed", "unaddressed"],
+  });
 
   // use effect that is called each time the value of essayId changes
   useEffect(() => {
@@ -56,15 +76,50 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
     fetchEssay()
 
   }, [essayId, essayPrompt]);
-  // function to handle the button click
-  const handleCheckCardButtonClick = () => {
 
-  }
 
+//
+
+  useEffect(() => {
+    // Track the child state variable and invoke the callback function whenever it changes
+    setNumberIssuesAddressed(childNumberIssuesAddressed);
+  }, [childNumberIssuesAddressed, setNumberIssuesAddressed]);
+
+  // use effect that is called each time the value of essayId changes
+  useEffect(() => {
+
+    updateIssuesAddressedDictionary(cardCompletionDictionary)
+
+  }, [cardCompletionDictionary]);
+
+  // Update the child state variable that tracks the number of completed issues
+  const updateChildNumberIssuesAddressed = () => {
+
+    let newNumberIssuesAddressed = 0;
+    for (const key in cardCompletionDictionary) {
+      const completionArray = cardCompletionDictionary[key];
+      for (const value of completionArray) {
+        if (value === "completed") {
+          newNumberIssuesAddressed ++;
+        }
+      }
+    }
+    setChildNumberIssuesAdressed(newNumberIssuesAddressed);
+  };
+ 
+  // helper functions
   // Helper function to handle tab click
   const handleTabClick = (key) => {
-    saveEssay();
+
     setActiveTabKey(key);
+  
+    updateTabAPICallHistory((prevState) => ({
+      ...prevState,
+      [key]: true,
+    }));
+  
+    saveEssay();
+
     callbackTabClicked(key);
   };
 
@@ -72,39 +127,13 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
   const handleShowAlert = () => {
     setShowReReviewAlert(true);
   };
-
-  // save a the new essay in our system under the current userId and essayId
-  const saveEssay = async () => {
-    try {
-
-      const response = await axios.patch(UPDATE_ESSAY_URL, {
-        essayId: essayId,
-        userId: userId,
-        newEssayString: essay
-      });
-
-      console.log("Saved the essay and this was the response:")
-      console.log(response)
-
-      setLastSavedEssay(essay);
-
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const handleEditorChange = (event) => {
-    const newValue = event.target.value;
-    updateEssay(newValue);
-    updateEssayInParent(newValue);
-  };
-
+  
   // Helper function to check if the "Grammar" tab is active
   const isGrammarTabActive = () => activeTabKey === 'grammar';
 
   const toggleAssistant = () => {
-    setAssistantOpen(!assistantOpen);
-  }
+   setAssistantOpen(!assistantOpen);
+ }
 
   // Helper function to render the RecommendationCard component
   const renderRecommendationCard = (paragraph, index, key) => (
@@ -112,13 +141,47 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
       key={index}
       text={paragraph}
       toggleAssistant={toggleAssistant}
-      onCheckButtonClick={handleCheckCardButtonClick}
+      hasDropShadow={true}
       onReReviewClick={() => handleReReviewButtonClick(key, index)}
+      isCompleted={cardCompletionDictionary[key] && cardCompletionDictionary[key][index]}
+      onCompletionStatusChange={isCompleted =>
+        handleCardCompletionStatusChange(activeTabKey, index, isCompleted)}
       hideButtons={isGrammarTabActive()} // Conditionally hide the buttons when the "Grammar" tab is active
     />
   );
 
-  // initialize tabs
+  const handleCardCompletionStatusChange = (key, index, isCompleted) => {
+    console.log(`This is the key ${key}`)
+    console.log(`This is the index ${index}`)
+    console.log(`this is icCompleted ${isCompleted}`)
+    console.log(isCompleted)
+    updateCardCompletionDictionary(prevStatus => {
+      const updatedDictionary = { ...prevStatus };
+      if (!updatedDictionary[key]) {
+        updatedDictionary[key] = [];
+      }
+      if (isCompleted == "accepted") {
+        updatedDictionary[key][index] = "accepted";
+      }
+      else if (isCompleted == "rejected") {
+        updatedDictionary[key][index] = "rejected";
+      } else {
+        updatedDictionary[key][index] = "unaddressed";
+      }
+      console.log(`This is the updated dictionary ${JSON.stringify(updatedDictionary)}`)
+      return updatedDictionary;
+    });
+    updateChildNumberIssuesAddressed();
+  };
+
+  // helper function that updates the value of the essay if there is a change made in the textarea
+  const handleEditorChange = (event) => {
+    const newValue = event.target.value;
+    updateEssay(newValue);
+    updateEssayInParent(newValue);
+  };
+
+  // helper function to initialize tabs
   const items = [
     { label: "Grammar", key: "grammar" },
     { label: "Hook", key: "hook" },
@@ -139,7 +202,42 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
     );
   });
 
+  // helper function that calls onPrompt when a tab is clicked
+  // will be helpful when we add more logic limiting number of prompt api calls
+  const callbackTabClicked = (key) => {
+    console.log(cardCompletionDictionary);
+  
+    const selectedItem = items.find((item) => item.key === key); // Find the item with matching key
+    if (selectedItem) {
+      const category = selectedItem.key;
+      const index = items.indexOf(selectedItem); // Get the index of the selected item
 
+      if (tabAPICallHistory[key] == false) {
+        onPrompt(category, index);
+      }
+    }
+  };
+
+  // api calls 
+  // save a the new essay in our system under the current userId and essayId
+  const saveEssay = async () => {
+    try {
+
+      const response = await axios.patch(UPDATE_ESSAY_URL, {
+        essayId: essayId, 
+        userId: userId,
+        newEssayString: essay
+      });
+
+      console.log("Saved the essay and this was the response:")
+      console.log(response)
+
+      setLastSavedEssay(essay);
+
+    } catch (error) {
+      console.log(error)
+    }
+  }   
 
   // fetches the essay from the api based on the essayId
   const fetchEssay = async () => {
@@ -158,46 +256,6 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
     }
   };
 
-  // // updates db when save button is clicked
-  // const onSave = async (values) => {
-  //   try {
-  //     const response_save = await axios.post(UPLOAD_URL,
-  //       {
-  //         userId: values.userId,
-  //         customFileName: values.fileName
-  //       },
-  //     );
-  //     console.log(JSON.stringify(response_register));
-
-  //   } catch (err) {
-  //     console.log(err);
-  //     if (!err?.response) {
-  //       setErrMsg('No Server Response');
-  //     } else {
-  //       setErrMsg('Login Failed');
-  //     }
-  //   }
-  // };
-
-  // // Helper function to update the height of the TextArea based on its content
-  // const updateTextareaHeight = () => {
-  //   if (textareaRef.current) {
-  //     const textareaRows = textareaRef.current.rows;
-  //     textareaRef.current.rows = 1; // Reset the number of rows to 1 to calculate the scroll height correctly
-  //     const scrollHeight = textareaRef.current.scrollHeight;
-  //     const calculatedRows = Math.ceil(scrollHeight / 20); // Adjust the division value (20) based on your desired row height
-  //     textareaRef.current.rows = calculatedRows;
-  //   }
-  // };
-
-  // // updates local version of essay
-  // // also updates the local version of the essay in the parent component
-  // const onChange = (e) => {
-  //   updateEssay(e.target.value);
-  //   updateEssayInParent(e.target.value);
-  //   updateTextAreaHeight();
-  // };
-
   //universal api call for all prompts
   const onPrompt = async (category, key) => {
     if (essay.split(" ").length > 10 && essay.split(" ").length < 5000) {
@@ -208,7 +266,7 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
 
         const response_get_prompt = await axios.post(GET_THEME_URL, {
           essay: essay,
-          essayPrompt: essayPrompt
+          prompt: essayPrompt
         });
 
         const paragraphs = response_get_prompt.data.response.split("\n\n");
@@ -283,8 +341,6 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
   };
 
 
-
-
   // helper function that calls onPrompt when a tab is clicked
   // will be helpful when we add more logic limiting number of prompt api calls
   const callbackTabClicked = (key) => {
@@ -307,6 +363,7 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
     console.log(essay);
     // Add your custom logic here
   };
+
 
   // returns the UI elements of the essay reviewer component along with their props client_F1N7MawpRKSKRomuVRwXMi
   return (
@@ -357,19 +414,20 @@ const EssayReviewer = ({ essayId, updateEssayInParent }) => {
 
       </Row>
       {showReReviewAlert && (
-        <Modal
-          title="Oops!"
-          open={showReReviewAlert}
-          onCancel={() => setShowReReviewAlert(false)}
-          onOk={() => setShowReReviewAlert(false)}
-          centered
-          footer={null}
-        >
-          {/* Your alert content */}
-          <p>The "Re-Review" button tells our AI to review how well your new changes address it's suggestion, but you haven't made any changes yet! Address the suggestion first, then hit ReReview.</p>
-        </Modal>
-      )}
-    </div>);
+
+  <Modal
+    title="Oops!"
+    open={showReReviewAlert}
+    onCancel={() => setShowReReviewAlert(false)}
+    onOk={() => setShowReReviewAlert(false)}
+    centered
+    footer={null}
+  >
+    <p>The "Re-Review" button tells our AI to review how well your new changes address it's suggestion, but you haven't made any changes yet! Address the suggestion first, then hit ReReview.</p>
+  </Modal>
+)}
+  </div>);
+
 }
 
 export default EssayReviewer;
